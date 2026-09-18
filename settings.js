@@ -6,8 +6,8 @@
   const APP = document.getElementById("nexus-settings-app");
   if (!APP) return;
 
-     // Labels + accent palette (single source of truth for breadcrumbs/nav)
-     
+    //  Labels + accent palette (single source of truth for breadcrumbs/nav)
+    
   const LABELS = {
     home: "Home",
     system: "System",
@@ -34,21 +34,81 @@
     azure: { c1: "#8fc7ff", c2: "#3b82f6" },
   };
 
+  const CoreState = window.nexusStateManager || null;
+  const CoreAuth = window.nexusAuthManager || null;
+  const CoreWindow = window.nexusWindowManager || null;
+  const CoreApp = window.nexusAppManager || null;
+  const CoreEvents = window.nexusEventSystem || window.nexusEventBus || null;
 
-     // State — hydrated from localStorage where sensible, so choices persist
-     // across reloads without needing a backend.
-    
+  // Reads one setting. Core's bag first, local fallback only if Core isn't here yet.
+  function readSetting(key, fallback) {
+    if (CoreState && typeof CoreState.getSettings === "function") {
+      const all = CoreState.getSettings() || {};
+      return key in all ? all[key] : fallback;
+    }
+    const raw = localStorage.getItem("ns-fallback-" + key);
+    if (raw === null) return fallback;
+    try { return JSON.parse(raw); } catch (e) { return raw; }
+  }
+
+  // Writes one setting through Core (which is expected to notify the Event
+  // System itself). Only emits manually when Core isn't present, so we
+  // don't double-notify once the real State Manager is wired in.
+  function writeSetting(key, value) {
+    if (CoreState && typeof CoreState.updateSetting === "function") {
+      CoreState.updateSetting(key, value);
+    } else {
+      localStorage.setItem("ns-fallback-" + key, JSON.stringify(value));
+      emitEvent("settings:changed", { key, value });
+    }
+  }
+
+  function emitEvent(name, detail) {
+    if (CoreEvents && typeof CoreEvents.emit === "function") {
+      CoreEvents.emit(name, detail);
+    } else {
+      document.dispatchEvent(new CustomEvent("nexus:" + name, { detail }));
+    }
+  }
+
+  function getCurrentUser() {
+    if (CoreAuth && typeof CoreAuth.getUser === "function") {
+      const u = CoreAuth.getUser() || {};
+      return { name: u.name || "Alex", username: u.username || u.email || "alex@nexus", avatar: u.avatar || "" };
+    }
+    return {
+      name: readSetting("profile-name", "Alex"),
+      username: readSetting("profile-username", "alex@nexus"),
+      avatar: readSetting("profile-avatar", ""),
+    };
+  }
+
+  // Identity fields (name/username/avatar) are supposed to live in Auth,
+  // per the doc — GUESSED updateUser() signature, confirm with Core owner.
+  function updateCurrentUser(patch) {
+    if (CoreAuth && typeof CoreAuth.updateUser === "function") {
+      CoreAuth.updateUser(patch);
+    } else {
+      if ("name" in patch) writeSetting("profile-name", patch.name);
+      if ("username" in patch) writeSetting("profile-username", patch.username);
+      if ("avatar" in patch) writeSetting("profile-avatar", patch.avatar);
+    }
+    emitEvent("profile:changed", patch);
+  }
+
+  // Old localStorage-keyed persist() calls all through this file now route
+  // through the adapter above instead of owning a second settings system.
+  function persist(key, value) {
+    writeSetting(key.replace(/^ns-/, ""), value);
+  }
+
   const state = {
     path: [], // e.g. ["system", "display"]
     pendingHighlight: null,
-    theme: localStorage.getItem("ns-theme") ?? "dark",
-    accent: localStorage.getItem("ns-accent") ?? "amber",
-    wallpaper: localStorage.getItem("ns-wallpaper") ?? "1",
-    profile: {
-      name: localStorage.getItem("ns-name") ?? "Alex",
-      username: localStorage.getItem("ns-username") ?? "alex@nexus",
-      avatar: localStorage.getItem("ns-avatar") ?? "",
-    },
+    theme: readSetting("theme", "dark"),
+    accent: readSetting("accent", "amber"),
+    wallpaper: readSetting("wallpaper", "1"),
+    profile: getCurrentUser(),
     toggles: Object.assign(
       {
         "bluetooth-master": true,
@@ -67,15 +127,15 @@
         "screensaver": true,
         "clock-24h": false,
       },
-      JSON.parse(localStorage.getItem("ns-toggles") || "{}")
+      readSetting("toggles", {})
     ),
     sliders: Object.assign(
       { brightness: 80, volume: 62 },
-      JSON.parse(localStorage.getItem("ns-sliders") || "{}")
+      readSetting("sliders", {})
     ),
     storage: Object.assign(
       { apps: 18, docs: 12, media: 26, system: 12 }, // % of capacity, sums to "used"
-      JSON.parse(localStorage.getItem("ns-storage") || "{}")
+      readSetting("storage", {})
     ),
     btDevices: [
       { id: "buds", name: "Nexus Buds Pro", type: "Audio", connected: true },
@@ -85,27 +145,20 @@
     clockTimer: null,
   };
 
- 
-     // Small helpers
-
+    //  Small helpers
+    
   const $ = (sel, ctx) => (ctx || APP).querySelector(sel);
   const $all = (sel, ctx) => Array.from((ctx || APP).querySelectorAll(sel));
-
-  function persist(key, value) {
-    try {
-      localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
-    } catch (err) {
-      /* storage may be unavailable in some preview contexts — fail quietly */
-    }
-  }
 
   function escapeHTML(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
     }[c]));
   }
-     // Theme + accent
-    
+
+  /* ----------------------------------------------------------------------
+     Theme + accent
+     -------------------------------------------------------------------- */
   function applyTheme(theme) {
     let resolved = theme;
     if (theme === "system") {
@@ -134,9 +187,9 @@
     }
   }
 
-  
-     // Navigation: path array + breadcrumbs
-    
+ 
+    //  Navigation: path array + breadcrumbs
+   
   function navigate(path, opts) {
     state.path = path;
     state.pendingHighlight = (opts && opts.highlight) || null;
@@ -166,9 +219,9 @@
     });
   }
 
- 
-     // Reusable markup fragments
-     
+
+    //  Reusable markup fragments
+    
   function switchHTML(key, checked, disabled) {
     return `<button type="button" class="ns-switch${checked ? " is-on" : ""}" data-ns-toggle="${key}" role="switch" aria-checked="${checked}"${disabled ? " disabled" : ""}></button>`;
   }
@@ -606,7 +659,7 @@
   }
 
   
-     // Content dispatcher
+    //  Content dispatcher
     
   function renderContent() {
     const content = $("#ns-content");
@@ -646,10 +699,8 @@
       state.pendingHighlight = null;
     }
   }
-
- 
-     // Clock (Time & language page)
-   
+  
+    //  Clock (Time & language page)
   function tickClock() {
     const now = new Date();
     const timeEl = $("#ns-clock");
@@ -676,8 +727,7 @@
     }
   }
 
-     // Toast
-     
+    //  Toast
   let toastTimer = null;
   function showToast(message) {
     const toast = $("#ns-toast");
@@ -687,9 +737,7 @@
     toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2600);
   }
 
-  
-     // Toggle / slider / select / radio handling (all delegated on #ns-content)
-    
+    //  Toggle / slider / select / radio handling (all delegated on #ns-content)
   function handleToggle(el) {
     const key = el.dataset.nsToggle;
 
@@ -700,6 +748,8 @@
       if (device) device.connected = !device.connected;
       el.classList.toggle("is-on");
       el.setAttribute("aria-checked", el.classList.contains("is-on"));
+      const statusEl = el.closest(".ns-device")?.querySelector(".ns-device-status");
+      if (statusEl) statusEl.textContent = device && device.connected ? "Connected" : "Not connected";
       return;
     }
 
@@ -768,23 +818,33 @@
 
       case "pick-wallpaper":
         state.wallpaper = el.dataset.w;
-        persist("ns-wallpaper", state.wallpaper);
-        document.dispatchEvent(new CustomEvent("nexus:wallpaper-change", { detail: { wallpaper: state.wallpaper } }));
+        persist("ns-wallpaper", state.wallpaper); // → State Manager → its own Event System notification
         renderContent();
         showToast("Wallpaper updated");
         break;
 
-      case "scan-device":
+      case "scan-device": {
         state.scanning = true;
         renderContent();
         setTimeout(() => {
           state.scanning = false;
-          const found = { id: "mouse" + Date.now(), name: "Nexus Mouse", type: "Input", connected: false };
-          state.btDevices.push(found);
+          const pool = [
+            { name: "Nexus Mouse", type: "Input" },
+            { name: "Nexus Speaker", type: "Audio" },
+            { name: "Nexus Webcam", type: "Input" },
+          ];
+          const already = new Set(state.btDevices.map((d) => d.name));
+          const next = pool.find((p) => !already.has(p.name));
+          if (next) {
+            state.btDevices.push({ id: next.name.toLowerCase().replace(/\s+/g, "-"), name: next.name, type: next.type, connected: false });
+            showToast("Found " + next.name + " nearby");
+          } else {
+            showToast("No new devices found nearby");
+          }
           renderContent();
-          showToast("Found a new device nearby");
         }, 1600);
         break;
+      }
 
       case "free-up-space": {
         el.disabled = true;
@@ -836,8 +896,7 @@
         const username = $("#ns-username-input").value.trim() || "alex@nexus";
         state.profile.name = name;
         state.profile.username = username;
-        persist("ns-name", name);
-        persist("ns-username", username);
+        updateCurrentUser({ name, username }); // identity → Auth Manager, not the settings bag
         syncProfileUI();
         showToast("Profile updated");
         break;
@@ -860,11 +919,18 @@
         break;
 
       case "minimize":
-        // hook point for the window manager teammate builds separately
-        document.dispatchEvent(new CustomEvent("nexus:window-minimize", { detail: { app: "settings" } }));
+        if (CoreWindow && typeof CoreWindow.minimize === "function") {
+          CoreWindow.minimize("settings");
+        } else {
+          emitEvent("window-minimize", { app: "settings" });
+        }
         break;
       case "maximize":
-        APP.classList.toggle("is-maximized");
+        if (CoreWindow && typeof CoreWindow.maximize === "function") {
+          CoreWindow.maximize("settings");
+        } else {
+          APP.classList.toggle("is-maximized");
+        }
         break;
       case "close":
         closeWindow();
@@ -883,8 +949,6 @@
     });
   }
 
-     // Avatar upload (FileReader — no backend needed for the demo)
-   
   function bindAvatarInput() {
     $("#ns-avatar-input").addEventListener("change", (e) => {
       const file = e.target.files?.[0];
@@ -892,16 +956,16 @@
       const reader = new FileReader();
       reader.onload = () => {
         state.profile.avatar = reader.result;
-        persist("ns-avatar", state.profile.avatar);
+        updateCurrentUser({ avatar: state.profile.avatar }); // identity → Auth Manager
         syncProfileUI();
         showToast("Profile photo updated");
       };
       reader.readAsDataURL(file);
     });
   }
+
+    //  Change-password dialog
   
-     // Change-password dialog
-    
   function openPasswordDialog() {
     const dialog = $("#ns-password-dialog");
     $("#ns-pw-current").value = "";
@@ -977,6 +1041,11 @@
   }
 
   function closeWindow() {
+    if (CoreWindow && typeof CoreWindow.close === "function") {
+      CoreWindow.close("settings");
+      return;
+    }
+    // No Window Manager wired in yet — fall back to handling it ourselves
     const anim = APP.animate(
       [
         { transform: "translate(0, 0) scale(1)", opacity: 1 },
@@ -987,11 +1056,15 @@
     anim.onfinish = () => {
       APP.style.display = "none";
       $("#ns-reopen-pill").hidden = false;
-      document.dispatchEvent(new CustomEvent("nexus:window-close", { detail: { app: "settings" } }));
+      emitEvent("window-close", { app: "settings" });
     };
   }
 
   function reopenWindow() {
+    if (CoreWindow && typeof CoreWindow.open === "function") {
+      CoreWindow.open("settings");
+      return;
+    }
     APP.style.display = "";
     $("#ns-reopen-pill").hidden = true;
     APP.animate(
@@ -1003,8 +1076,8 @@
     );
   }
 
-     // Search (sidebar "Find a setting")
-     
+  
+    //  Search (sidebar "Find a setting")
   function bindSearch() {
     $("#ns-search-input").addEventListener("input", (e) => {
       const q = e.target.value.trim().toLowerCase();
@@ -1021,8 +1094,8 @@
   }
 
   
-     // Event delegation — set up once, survives every innerHTML re-render
-
+    //  Event delegation — set up once, survives every innerHTML re-render
+    
   function bindDelegatedEvents() {
     const content = $("#ns-content");
 
@@ -1076,8 +1149,8 @@
     $("#ns-reopen-pill").addEventListener("click", reopenWindow);
   }
 
-     // Init
-     
+    //  Init
+    
   let initialized = false;
   function init() {
     if (initialized) return;
@@ -1090,6 +1163,18 @@
     bindSearch();
     bindAvatarInput();
     navigate([]);
+
+    // Register with App Manager so it (not this file) owns app lifecycle.
+    // GUESSED signature — confirm the real one with whoever owns Core.
+    if (CoreApp && typeof CoreApp.register === "function") {
+      CoreApp.register({
+        id: "settings",
+        name: "Settings",
+        icon: "⚙",
+        open: reopenWindow,
+        close: closeWindow,
+      });
+    }
   }
 
   if (document.readyState !== "loading") init();

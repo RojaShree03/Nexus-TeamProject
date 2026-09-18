@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Nexus OS</title>
+
+    <link rel="stylesheet" href="./css/core.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ============================================================
+     NEXUS ROOT
+============================================================ -->
+
+    <div id="nexus">
+
+
+        <!-- ========================================================
+         SVG ICON SYSTEM
+         All icons are local and require no external library.
+    ========================================================= -->
+
+        <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+
+            <defs>
+
+
+                <!-- FILES -->
+
+                <symbol id="icon-files" viewBox="0 0 24 24">
+
+                    <path
+                        d="M3.5 6.5A2.5 2.5 0 0 1 6 4h4l2 2h6.5A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-12A2.5 2.5 0 0 1 4 17.5z"
+                        fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
+
+                    <path d="M4 9h17" fill="none" stroke="currentColor" stroke-width="1.7" />
+
+                </symbol>
+
+
+                <!-- PROJECTS -->
+
+                <symbol id="icon-projects" viewBox="0 0 24 24">
+
+                    <path d="m8 8-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                        stroke-linejoin="round" />
+
+                    <path d="m16 8 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                        stroke-linejoin="round" />
+
+                    <path d="m14 5-4 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- NOTES -->
+
+                <symbol id="icon-notes" viewBox="0 0 24 24">
+
+                    <path d="M6 3.5h9l4 4V20H6z" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linejoin="round" />
+
+                    <path d="M14.5 3.5V8H19" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linejoin="round" />
+
+                    <path d="M9 12h6M9 15h6M9 18h4" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- BROWSER -->
+
+                <symbol id="icon-browser" viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+
+                    <path d="M3.8 9h16.4M3.8 15h16.4" fill="none" stroke="currentColor" stroke-width="1.4" />
+
+                    <path d="M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5s-1.1 6.2-3.3 8.5c-2.2-2.3-3.3-5.1-3.3-8.5S9.8 5.8 12 3.5Z"
+                        fill="none" stroke="currentColor" stroke-width="1.4" />
+
+                </symbol>
+
+
+                <!-- SETTINGS -->
+
+                <symbol id="icon-settings" viewBox="0 0 24 24">
+
+                    <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" fill="none" stroke="currentColor"
+                        stroke-width="1.6" />
+
+                    <path
+                        d="M19.2 13.4a7.8 7.8 0 0 0 0-2.8l1.5-1.2-1.8-3.1-1.8.7a8 8 0 0 0-2.4-1.4L14.5 4h-3.6l-.3 1.6a8 8 0 0 0-2.4 1.4l-1.8-.7-1.8 3.1 1.5 1.2a7.8 7.8 0 0 0 0 2.8l-1.5 1.2 1.8 3.1 1.8-.7a8 8 0 0 0 2.4 1.4l.3 1.6h3.6l.3-1.6a8 8 0 0 0 2.4-1.4l1.8.7 1.8-3.1z"
+                        fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+
+                </symbol>
+
+
+                <!-- TERMINAL -->
+
+                <symbol id="icon-terminal" viewBox="0 0 24 24">
+
+                    <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor"
+                        stroke-width="1.6" />
+
+                    <path d="m7 9 3 2.5L7 14" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" stroke-linejoin="round" />
+
+                    <path d="M12.5 14H17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- TRASH -->
+
+                <symbol id="icon-trash" viewBox="0 0 24 24">
+
+                    <path d="M5 7h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+
+                    <path d="M9 7V4.5h6V7" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linejoin="round" />
+
+                    <path d="M7 7.5 8 20h8l1-12.5" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linejoin="round" />
+
+                    <path d="M10 11v5M14 11v5" fill="none" stroke="currentColor" stroke-width="1.4"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- SEARCH -->
+
+                <symbol id="icon-search" viewBox="0 0 24 24">
+
+                    <circle cx="10.8" cy="10.8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.7" />
+
+                    <path d="m16 16 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- WIFI -->
+
+                <symbol id="icon-wifi" viewBox="0 0 24 24">
+
+                    <path d="M3.5 8.8a13.5 13.5 0 0 1 17 0" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+
+                    <path d="M6.8 12a8.3 8.3 0 0 1 10.4 0" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+
+                    <path d="M10 15.2a3.5 3.5 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+
+                    <circle cx="12" cy="19" r="1" fill="currentColor" />
+
+                </symbol>
+
+
+                <!-- SOUND -->
+
+                <symbol id="icon-sound" viewBox="0 0 24 24">
+
+                    <path d="M5 10h3l4-3.5v11L8 14H5z" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linejoin="round" />
+
+                    <path d="M15.5 9a4.5 4.5 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+
+                    <path d="M18 6.8a7.5 7.5 0 0 1 0 10.4" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- BATTERY -->
+
+                <symbol id="icon-battery" viewBox="0 0 24 24">
+
+                    <rect x="4" y="7" width="15" height="10" rx="2" fill="none" stroke="currentColor"
+                        stroke-width="1.5" />
+
+                    <path d="M20 10v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+
+                    <path d="M6.5 9.5h8v5h-8z" fill="currentColor" />
+
+                </symbol>
+
+
+                <!-- PROFILE -->
+
+                <symbol id="icon-profile" viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.6" />
+
+                    <path d="M5.5 20a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- LOCK -->
+
+                <symbol id="icon-lock" viewBox="0 0 24 24">
+
+                    <rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor"
+                        stroke-width="1.6" />
+
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- INFO -->
+
+                <symbol id="icon-info" viewBox="0 0 24 24">
+
+                    <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+
+                    <path d="M12 10.5v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+
+                    <circle cx="12" cy="7.5" r="1" fill="currentColor" />
+
+                </symbol>
+
+
+                <!-- DOWNLOAD -->
+
+                <symbol id="icon-download" viewBox="0 0 24 24">
+
+                    <path d="M12 4v11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+
+                    <path d="m7.5 11 4.5 4.5 4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" stroke-linejoin="round" />
+
+                    <path d="M5 20h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- HOME -->
+
+                <symbol id="icon-home" viewBox="0 0 24 24">
+
+                    <path d="m4 11 8-7 8 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round" />
+
+                    <path d="M6.5 10v9h11v-9" fill="none" stroke="currentColor" stroke-width="1.6"
+                        stroke-linejoin="round" />
+
+                </symbol>
+
+
+                <!-- MENU -->
+
+                <symbol id="icon-menu" viewBox="0 0 24 24">
+
+                    <path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- CLOSE -->
+
+                <symbol id="icon-close" viewBox="0 0 24 24">
+
+                    <path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" />
+
+                </symbol>
+
+
+                <!-- CHEVRON -->
+
+                <symbol id="icon-chevron" viewBox="0 0 24 24">
+
+                    <path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
+                        stroke-linejoin="round" />
+
+                </symbol>
+
+
+            </defs>
+
+        </svg>
+
+
+
+        <!-- ========================================================
+         BOOT SCREEN
+    ========================================================= -->
+
+        <section id="boot-screen" class="screen active">
+
+            <div class="boot-content">
+
+
+                <div class="nexus-logo">
+
+                    <img src="./assets/logo/N-logo.png" alt="Nexus">
+
+                </div>
+
+
+                <h1>Nexus</h1>
+
+
+                <p>
+                    Your space. Your flow.
+                </p>
+
+
+                <p id="boot-status" class="boot-status">
+                    Initializing system
+                </p>
+
+
+                <div class="boot-loader">
+
+                    <div id="boot-progress" class="boot-progress"></div>
+
+                </div>
+
+
+                <div id="boot-percentage" class="boot-percentage">
+                    0%
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================================
+         SETUP SCREEN
+    ========================================================= -->
+
+        <section id="setup-screen" class="screen auth-screen">
+
+            <div class="auth-container">
+
+
+                <div class="auth-brand">
+
+                    <div class="auth-brand-mark">
+
+                        <img src="./assets/logo/N-logo.png" alt="Nexus">
+
+                    </div>
+
+                    <span>Nexus</span>
+
+                </div>
+
+
+                <div class="auth-header">
+
+                    <h2>Create your space</h2>
+
+                    <p>
+                        Set up your Nexus profile.
+                    </p>
+
+                </div>
+
+
+                <div class="profile-upload">
+
+                    <div id="setup-avatar" class="avatar">
+                        N
+                    </div>
+
+
+                    <button type="button" id="change-avatar-btn" class="avatar-button">
+                        Choose profile photo
+                    </button>
+
+
+                    <input type="file" id="avatar-input" accept="image/*" hidden>
+
+                </div>
+
+
+                <form id="setup-form" class="auth-form">
+
+
+                    <div class="input-group">
+
+                        <label for="setup-name">
+                            Your name
+                        </label>
+
+                        <input type="text" id="setup-name" placeholder="Enter your name" autocomplete="name">
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="setup-password">
+                            Password
+                        </label>
+
+                        <input type="password" id="setup-password" placeholder="Create a password"
+                            autocomplete="new-password">
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="setup-confirm-password">
+                            Confirm password
+                        </label>
+
+                        <input type="password" id="setup-confirm-password" placeholder="Confirm your password"
+                            autocomplete="new-password">
+
+                    </div>
+
+
+                    <p id="setup-error" class="auth-error"></p>
+
+
+                    <button type="submit" class="auth-primary-button">
+
+                        <span>
+                            Create Profile
+                        </span>
+
+                        <span>→</span>
+
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================================
+         LOGIN SCREEN
+    ========================================================= -->
+
+        <section id="login-screen" class="screen auth-screen">
+
+            <div class="auth-container">
+
+
+                <div class="auth-brand">
+
+                    <div class="auth-brand-mark">
+
+                        <img src="./assets/logo/N-logo.png" alt="Nexus">
+
+                    </div>
+
+                    <span>Nexus</span>
+
+                </div>
+
+
+                <div class="auth-header">
+
+                    <h2>Welcome back</h2>
+
+                    <p>
+                        Good to see you again.
+                    </p>
+
+                </div>
+
+
+                <div class="login-profile">
+
+                    <div id="login-avatar" class="avatar">
+                        N
+                    </div>
+
+
+                    <h3 id="login-name">
+                        User
+                    </h3>
+
+                </div>
+
+
+                <form id="login-form" class="auth-form">
+
+
+                    <div class="input-group">
+
+                        <label for="login-password">
+                            Password
+                        </label>
+
+                        <input type="password" id="login-password" placeholder="Enter your password"
+                            autocomplete="current-password">
+
+                    </div>
+
+
+                    <p id="login-error" class="auth-error"></p>
+
+
+                    <button type="submit" class="auth-primary-button">
+
+                        <span>
+                            Unlock
+                        </span>
+
+                        <span>→</span>
+
+                    </button>
+
+
+                </form>
+
+
+                <button type="button" id="forgot-password" class="text-button">
+                    Forgot your password?
+                </button>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ========================================================
+         DESKTOP
+    ========================================================= -->
+
+        <section id="desktop" class="screen desktop-screen">
+
+
+            <!-- ====================================================
+             TOP BAR
+        ================================================== -->
+
+            <header class="nexus-topbar">
+
+
+                <!-- LEFT -->
+
+                <div class="topbar-left">
+
+
+                    <button type="button" class="nexus-brand" id="nexus-brand" title="Nexus">
+
+                        <img src="./assets/logo/N-logo.png" alt="Nexus" class="topbar-logo">
+
+                        <span>NEXUS</span>
+
+                    </button>
+
+
+                    <button type="button" class="topbar-menu" data-menu="file">
+                        File
+                    </button>
+
+
+                    <button type="button" class="topbar-menu" data-menu="edit">
+                        Edit
+                    </button>
+
+
+                    <button type="button" class="topbar-menu" data-menu="view">
+                        View
+                    </button>
+
+
+                    <button type="button" class="topbar-menu" data-menu="window">
+                        Window
+                    </button>
+
+
+                    <button type="button" class="topbar-menu" data-menu="help">
+                        Help
+                    </button>
+
+
+                </div>
+
+
+
+                <!-- CENTER SEARCH -->
+
+                <div class="topbar-search">
+
+
+                    <svg width="16" height="16" class="search-svg" aria-hidden="true">
+
+                        <use href="#icon-search"></use>
+
+                    </svg>
+
+
+                    <input type="search" id="desktop-search" placeholder="Search anything..." autocomplete="off">
+
+
+                    <span class="search-shortcut">
+                        /
+                    </span>
+
+
+                </div>
+
+
+
+                <!-- RIGHT -->
+
+                <div class="topbar-right">
+
+
+                    <span class="system-indicator" title="System ready">
+                        ●
+                    </span>
+
+
+                    <svg width="16" height="16" class="system-icon" aria-hidden="true">
+
+                        <use href="#icon-wifi"></use>
+
+                    </svg>
+
+
+                    <svg width="16" height="16" class="system-icon" aria-hidden="true">
+
+                        <use href="#icon-sound"></use>
+
+                    </svg>
+
+
+                    <svg width="16" height="16" class="system-icon" aria-hidden="true">
+
+                        <use href="#icon-battery"></use>
+
+                    </svg>
+
+
+                    <span id="desktop-time" class="desktop-clock">
+                        12:00 PM
+                    </span>
+
+
+                    <button type="button" id="desktop-profile-button" class="desktop-profile-button" title="Profile">
+
+                        <div id="desktop-avatar" class="desktop-mini-avatar">
+                            N
+                        </div>
+
+                    </button>
+
+
+                </div>
+
+
+            </header>
+
+
+
+            <!-- ====================================================
+             DESKTOP WORKSPACE
+        ================================================== -->
+
+            <main class="nexus-desktop-area">
+
+
+                <!-- =================================================
+                 DESKTOP ICONS
+            ================================================= -->
+
+                <aside class="desktop-icon-column">
+
+
+                    <!-- FILES -->
+
+                    <button type="button" class="nexus-desktop-icon" data-app="files" title="Files">
+
+                        <span class="desktop-app-icon files-icon">
+
+                            <svg width="28" height="28" aria-hidden="true">
+
+                                <use href="#icon-files"></use>
+
+                            </svg>
+
+                        </span>
+
+
+                        <span class="desktop-app-name">
+                            Files
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- PROJECTS -->
+
+                    <button type="button" class="nexus-desktop-icon" data-app="projects" title="Projects">
+
+                        <span class="desktop-app-icon projects-icon">
+
+                            <svg width="28" height="28" aria-hidden="true">
+
+                                <use href="#icon-projects"></use>
+
+                            </svg>
+
+                        </span>
+
+
+                        <span class="desktop-app-name">
+                            Projects
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- NOTES -->
+
+                    <button type="button" class="nexus-desktop-icon" data-app="notes" title="Notes">
+
+                        <span class="desktop-app-icon notes-icon">
+
+                            <svg width="28" height="28" aria-hidden="true">
+
+                                <use href="#icon-notes"></use>
+
+                            </svg>
+
+                        </span>
+
+
+                        <span class="desktop-app-name">
+                            Notes
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- TERMINAL -->
+
+                    <button type="button" class="nexus-desktop-icon" data-app="terminal" title="Terminal">
+
+                        <span class="desktop-app-icon terminal-icon">
+
+                            <svg width="28" height="28" aria-hidden="true">
+
+                                <use href="#icon-terminal"></use>
+
+                            </svg>
+
+                        </span>
+
+
+                        <span class="desktop-app-name">
+                            Terminal
+                        </span>
+
+                    </button>
+
+
+
+                    <!-- TRASH -->
+
+                    <button type="button" class="nexus-desktop-icon" data-app="trash" title="Trash">
+
+                        <span class="desktop-app-icon trash-icon">
+
+                            <svg width="28" height="28" aria-hidden="true">
+
+                                <use href="#icon-trash"></use>
+
+                            </svg>
+
+                        </span>
+
+
+                        <span class="desktop-app-name">
+                            Trash
+                        </span>
+
+                    </button>
+
+
+                </aside>
+
+
+
+                <!-- =================================================
+                 CENTER
+            ================================================= -->
+
+                <section class="desktop-center">
+
+
+                    <p id="desktop-greeting-time" class="desktop-greeting-time">
+                        Good Morning,
+                    </p>
+
+
+                    <h1 id="desktop-greeting" class="desktop-user-name">
+                        User
+                    </h1>
+
+
+                    <p class="desktop-message">
+                        Small steps. Big progress.
+                    </p>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 DESKTOP NAVIGATION
+            ================================================= -->
+
+                <button type="button" id="desktop-navigation" class="desktop-navigation" title="Navigate">
+
+                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+
+                        <path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.7"
+                            stroke-linecap="round" stroke-linejoin="round" />
+
+                    </svg>
+
+                </button>
+
+
+
+                <!-- =================================================
+                 WINDOW LAYER
+                 Window Manager will use this.
+            ================================================= -->
+
+                <div id="window-layer" class="window-layer"></div>
+
+
+
+                <!-- =================================================
+                 DOCK
+            ================================================= -->
+
+                <nav class="nexus-dock" aria-label="Nexus Dock">
+
+
+                    <!-- NEXUS -->
+
+                    <button type="button" class="dock-item active" data-app="launcher" title="Application Launcher">
+
+                        <span class="dock-app-icon nexus-dock-logo">
+
+                            <img src="./assets/logo/N-logo.png" alt="Nexus">
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- FILES -->
+
+                    <button type="button" class="dock-item" data-app="files" title="Files">
+
+                        <span class="dock-app-icon files-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-files"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- PROJECTS -->
+
+                    <button type="button" class="dock-item" data-app="projects" title="Projects">
+
+                        <span class="dock-app-icon projects-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-projects"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- BROWSER -->
+
+                    <button type="button" class="dock-item" data-app="browser" title="Browser">
+
+                        <span class="dock-app-icon browser-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-browser"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- NOTES -->
+
+                    <button type="button" class="dock-item" data-app="notes" title="Notes">
+
+                        <span class="dock-app-icon notes-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-notes"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- SETTINGS -->
+
+                    <button type="button" class="dock-item" data-app="settings" title="Settings">
+
+                        <span class="dock-app-icon settings-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-settings"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- TERMINAL -->
+
+                    <button type="button" class="dock-item" data-app="terminal" title="Terminal">
+
+                        <span class="dock-app-icon terminal-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-terminal"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- SEPARATOR -->
+
+                    <span class="dock-separator"></span>
+
+
+                    <!-- TRASH -->
+
+                    <button type="button" class="dock-item" data-app="trash" title="Trash">
+
+                        <span class="dock-app-icon trash-icon">
+
+                            <svg width="27" height="27" aria-hidden="true">
+
+                                <use href="#icon-trash"></use>
+
+                            </svg>
+
+                        </span>
+
+                    </button>
+
+
+                </nav>
+
+
+            </main>
+
+
+
+            <!-- ====================================================
+             APPLICATION LAUNCHER
+        ================================================== -->
+
+            <div id="application-launcher" class="application-launcher" aria-hidden="true">
+
+
+                <div class="launcher-container">
+
+
+                    <div class="launcher-header">
+
+
+                        <div>
+
+                            <p class="launcher-label">
+                                NEXUS
+                            </p>
+
+                            <h2>
+                                Applications
+                            </h2>
+
+                        </div>
+
+
+                        <button type="button" id="launcher-close" class="launcher-close" title="Close">
+
+                            <svg width="18" height="18" aria-hidden="true">
+
+                                <use href="#icon-close"></use>
+
+                            </svg>
+
+                        </button>
+
+
+                    </div>
+
+
+
+                    <!-- SEARCH -->
+
+                    <div class="launcher-search">
+
+                        <svg width="17" height="17" aria-hidden="true">
+
+                            <use href="#icon-search"></use>
+
+                        </svg>
+
+
+                        <input type="search" id="launcher-search-input" placeholder="Search applications..."
+                            autocomplete="off">
+
+
+                        <span class="search-shortcut">
+                            /
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- APPLICATION GRID -->
+
+                    <div class="launcher-grid">
+
+
+                        <!-- FILES -->
+
+                        <button type="button" class="launcher-app" data-app="files">
+
+                            <span class="launcher-app-icon files-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-files"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Files
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- PROJECTS -->
+
+                        <button type="button" class="launcher-app" data-app="projects">
+
+                            <span class="launcher-app-icon projects-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-projects"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Projects
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- NOTES -->
+
+                        <button type="button" class="launcher-app" data-app="notes">
+
+                            <span class="launcher-app-icon notes-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-notes"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Notes
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- BROWSER -->
+
+                        <button type="button" class="launcher-app" data-app="browser">
+
+                            <span class="launcher-app-icon browser-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-browser"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Browser
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- SETTINGS -->
+
+                        <button type="button" class="launcher-app" data-app="settings">
+
+                            <span class="launcher-app-icon settings-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-settings"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Settings
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- TERMINAL -->
+
+                        <button type="button" class="launcher-app" data-app="terminal">
+
+                            <span class="launcher-app-icon terminal-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-terminal"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Terminal
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- TRASH -->
+
+                        <button type="button" class="launcher-app" data-app="trash">
+
+                            <span class="launcher-app-icon trash-icon">
+
+                                <svg width="29" height="29" aria-hidden="true">
+
+                                    <use href="#icon-trash"></use>
+
+                                </svg>
+
+                            </span>
+
+                            <span>
+                                Trash
+                            </span>
+
+                        </button>
+
+
+
+                        <!-- ABOUT -->
+
+                        <button type="button" class="launcher-app" data-app="about">
+
+                            <span class="launcher-app-icon nexus-dock-logo">
+
+                                <img src="./assets/logo/N-logo.png" alt="Nexus">
+
+                            </span>
+
+                            <span>
+                                About Nexus
+                            </span>
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+
+
+    <!-- ============================================================
+     NEXUS CORE JAVASCRIPT
+============================================================ -->
+    <!-- ============================================================
+     NEXUS CORE JAVASCRIPT
+============================================================ -->
+
+    <script src="./js/state-manager.js"></script>
+    <script src="./js/boot.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/app-manager.js"></script>
+    <script src="./js/shortcut.manager.js"></script>
+
+    <script src="./js/event-manager.js"></script>
+    <script src="./js/window-manager.js"></script>
+
+    <script src="./js/nexus.js"></script>
+
+
+</body>
+
+</html>

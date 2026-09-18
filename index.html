@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Web OS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nexus: {
+                            900: '#0b0f19',
+                            800: '#111827',
+                            700: '#1e293b',
+                            600: '#334155',
+                            accent: '#3b82f6',
+                            accentHover: '#2563eb',
+                            glow: 'rgba(59, 130, 246, 0.4)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="bg-nexus-900 text-slate-100 font-sans h-screen overflow-hidden select-none">
+
+    <!-- Desktop Background Wallpaper -->
+    <div id="desktop-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-700"
+        style="background-image: radial-gradient(circle at 50% 30%, #1e293b 0%, #0b0f19 80%);">
+        <!-- Ambient background glows -->
+        <div class="absolute top-1/4 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none">
+        </div>
+    </div>
+
+    <!-- Top Navigation / Status Bar -->
+    <header
+        class="relative z-40 h-8 bg-slate-900/60 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-3 sm:px-4 text-xs font-medium">
+        <div class="flex items-center space-x-3 sm:space-x-4">
+            <button id="start-btn"
+                class="flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-bold transition">
+                <i class="fa-solid fa-square-n text-lg"></i>
+                <span class="tracking-wide">NEXUS OS</span>
+            </button>
+            <div class="hidden md:flex items-center gap-0.5 text-slate-300">
+                <span class="text-slate-700 mx-2">|</span>
+                <button onclick="openApp('file-manager')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-folder-open text-blue-400"></i> Files
+                </button>
+                <button onclick="openApp('notepad')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-file-lines text-emerald-400"></i> Notepad
+                </button>
+                <button onclick="openApp('calculator')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-calculator text-amber-400"></i> Calc
+                </button>
+                <button onclick="openApp('terminal')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-terminal text-violet-400"></i> Terminal
+                </button>
+                <button onclick="openApp('task-manager')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-chart-pie text-rose-400"></i> Tasks
+                </button>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 sm:space-x-4 text-slate-400">
+            <span id="system-status" class="flex items-center gap-1.5 text-emerald-400 text-[11px]">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="hidden sm:inline">Online</span>
+            </span>
+            <i class="fa-solid fa-wifi hover:text-white cursor-pointer"></i>
+            <i class="fa-solid fa-volume-high hover:text-white cursor-pointer"></i>
+            <i class="fa-solid fa-battery-full hover:text-white cursor-pointer"></i>
+            <span id="top-clock" class="text-slate-200 font-mono text-[11px] sm:text-xs">11:42 AM</span>
+        </div>
+    </header>
+
+    <!-- Desktop Icons Area -->
+    <main id="desktop"
+        class="relative z-10 h-[calc(100vh-5rem)] p-3 sm:p-6 grid grid-flow-col grid-rows-5 sm:grid-rows-6 gap-3 sm:gap-6 justify-start content-start">
+        <!-- Desktop Shortcuts -->
+        <div class="desktop-icon group" onclick="openApp('file-manager')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-blue-600/30 border border-slate-700 group-hover:border-blue-500/50 rounded-2xl flex items-center justify-center text-blue-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-blue-300">Files</span>
+        </div>
+
+        <div class="desktop-icon group" onclick="openApp('notepad')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-emerald-600/30 border border-slate-700 group-hover:border-emerald-500/50 rounded-2xl flex items-center justify-center text-emerald-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-emerald-300">Notes</span>
+        </div>
+
+        <div class="desktop-icon group" onclick="openApp('calculator')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-amber-600/30 border border-slate-700 group-hover:border-amber-500/50 rounded-2xl flex items-center justify-center text-amber-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-calculator"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-amber-300">Calculator</span>
+        </div>
+
+        <div class="desktop-icon group" onclick="openApp('terminal')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-violet-600/30 border border-slate-700 group-hover:border-violet-500/50 rounded-2xl flex items-center justify-center text-violet-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-terminal"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-violet-300">Terminal</span>
+        </div>
+
+        <div class="desktop-icon group" id="desktop-trash-icon" onclick="openApp('trash')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-slate-600/30 border border-slate-700 group-hover:border-slate-500/50 rounded-2xl flex items-center justify-center text-slate-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i id="desktop-trash-icon-i" class="fa-solid fa-trash-can"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-slate-300">Trash</span>
+        </div>
+
+        <div class="desktop-icon group" onclick="openApp('task-manager')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-rose-600/30 border border-slate-700 group-hover:border-rose-500/50 rounded-2xl flex items-center justify-center text-rose-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <span class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-rose-300">Task
+                Manager</span>
+        </div>
+    </main>
+
+    <!-- WINDOW CONTAINERS -->
+
+    <!-- 1. FILE MANAGER WINDOW -->
+    <div id="win-file-manager"
+        class="app-window hidden absolute top-12 left-4 md:left-20 w-[96vw] md:w-[820px] max-w-[96vw] md:max-w-[820px] h-[82vh] md:h-[520px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Window Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-folder-open text-blue-400"></i>
+                <span>File Manager</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('file-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('file-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('file-manager')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Window Toolbar -->
+        <div
+            class="min-h-12 py-1.5 bg-slate-800/40 border-b border-slate-800 px-3 sm:px-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <button onclick="fmNavigateUp()" class="p-1.5 rounded hover:bg-slate-700 text-slate-300"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <button onclick="fmRefresh()" class="p-1.5 rounded hover:bg-slate-700 text-slate-300"><i
+                        class="fa-solid fa-rotate-right"></i></button>
+                <!-- Breadcrumbs -->
+                <div id="fm-breadcrumbs"
+                    class="flex items-center space-x-1 bg-slate-950/50 border border-slate-800 px-2 sm:px-3 py-1 rounded-lg text-xs text-slate-300 overflow-x-auto max-w-[180px] sm:max-w-xs">
+                    <span class="text-blue-400 font-semibold cursor-pointer" onclick="fmNavigateTo('Home')">Home</span>
+                    <span id="fm-current-path"></span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="relative">
+                    <input id="fm-search" type="text" placeholder="Search..." oninput="fmSearchFiles()"
+                        class="bg-slate-950/60 border border-slate-800 text-xs text-slate-200 rounded-lg pl-7 pr-2 py-1.5 focus:outline-none focus:border-blue-500 w-28 sm:w-44">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2 top-2.5 text-slate-500 text-xs"></i>
+                </div>
+                <button onclick="fmPromptCreateFile()"
+                    class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium transition shadow-md whitespace-nowrap">
+                    <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">New</span> File
+                </button>
+                <button onclick="fmPromptCreateFolder()"
+                    class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium transition whitespace-nowrap">
+                    <i class="fa-solid fa-folder-plus"></i> Folder
+                </button>
+            </div>
+        </div>
+        <!-- Main Content Body -->
+        <div class="flex-1 flex overflow-hidden">
+            <aside
+                class="fm-sidebar w-12 sm:w-36 md:w-48 bg-slate-950/40 border-r border-slate-800/80 p-2 sm:p-3 space-y-1 text-xs shrink-0">
+                <div
+                    class="fm-sidebar-title text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 mb-1 hidden sm:block">
+                    Navigation</div>
+                <button onclick="fmNavigateTo('Home')"
+                    class="fm-side-link active flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-house text-blue-400"></i><span class="hidden sm:inline">Home</span></button>
+                <button onclick="fmNavigateTo('Documents')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-folder text-amber-400"></i><span
+                        class="hidden sm:inline">Documents</span></button>
+                <button onclick="fmNavigateTo('Projects')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-code text-emerald-400"></i><span
+                        class="hidden sm:inline">Projects</span></button>
+                <button onclick="fmNavigateTo('Pictures')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-image text-indigo-400"></i><span
+                        class="hidden sm:inline">Pictures</span></button>
+                <button onclick="fmNavigateTo('Downloads')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-download text-teal-400"></i><span
+                        class="hidden sm:inline">Downloads</span></button>
+            </aside>
+            <!-- File Grid Container -->
+            <div class="flex-1 p-3 sm:p-4 overflow-y-auto">
+                <div id="fm-file-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Dynamic File Items Render Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. NOTEPAD WINDOW -->
+    <div id="win-notepad"
+        class="app-window hidden absolute top-14 left-4 md:left-32 w-[96vw] md:w-[720px] max-w-[96vw] md:max-w-[720px] h-[82vh] md:h-[480px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200 truncate">
+                <i class="fa-solid fa-file-lines text-emerald-400"></i>
+                <span id="notepad-title" class="truncate">Notepad - Untitled.txt</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('notepad')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('notepad')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('notepad')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- File Menu Bar -->
+        <div
+            class="min-h-9 py-1 bg-slate-800/50 border-b border-slate-800/80 px-3 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-300">
+            <button onclick="notepadNewFile()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-file text-slate-400"></i> New
+            </button>
+            <button onclick="notepadOpenFilePrompt()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-folder-open text-amber-400"></i> Open
+            </button>
+            <button onclick="notepadSaveFile()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-floppy-disk text-blue-400"></i> Save
+            </button>
+            <button onclick="notepadSaveAsPrompt()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-file-export text-purple-400"></i> Save As
+            </button>
+        </div>
+        <!-- Edit Toolbar -->
+        <div class="min-h-8 bg-slate-950/50 border-b border-slate-800/60 px-2 sm:px-3 flex flex-wrap items-center gap-0.5 text-xs text-slate-400"
+            onmousedown="event.preventDefault()">
+            <span
+                class="text-[9px] font-bold text-slate-600 uppercase tracking-wider mr-1.5 hidden sm:inline">Edit</span>
+            <button onclick="notepadUndo()" title="Undo (Ctrl+Z)" class="np-tool-btn">
+                <i class="fa-solid fa-rotate-left"></i><span class="hidden lg:inline ml-1">Undo</span>
+            </button>
+            <button onclick="notepadRedo()" title="Redo (Ctrl+Y)" class="np-tool-btn">
+                <i class="fa-solid fa-rotate-right"></i><span class="hidden lg:inline ml-1">Redo</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadCut()" title="Cut selection"
+                class="np-tool-btn text-amber-400/80 hover:text-amber-300">
+                <i class="fa-solid fa-scissors"></i><span class="hidden lg:inline ml-1">Cut</span>
+            </button>
+            <button onclick="notepadCopy()" title="Copy selection"
+                class="np-tool-btn text-blue-400/80 hover:text-blue-300">
+                <i class="fa-regular fa-copy"></i><span class="hidden lg:inline ml-1">Copy</span>
+            </button>
+            <button onclick="notepadPaste()" title="Paste from clipboard"
+                class="np-tool-btn text-emerald-400/80 hover:text-emerald-300">
+                <i class="fa-solid fa-clipboard"></i><span class="hidden lg:inline ml-1">Paste</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadSelectAll()" title="Select All"
+                class="np-tool-btn text-indigo-400/80 hover:text-indigo-300">
+                <i class="fa-solid fa-object-group"></i><span class="hidden lg:inline ml-1">All</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadFind()" title="Find text" class="np-tool-btn text-cyan-400/80 hover:text-cyan-300">
+                <i class="fa-solid fa-magnifying-glass"></i><span class="hidden lg:inline ml-1">Find</span>
+            </button>
+            <button onclick="notepadReplace()" title="Find &amp; Replace"
+                class="np-tool-btn text-teal-400/80 hover:text-teal-300">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i><span class="hidden lg:inline ml-1">Replace</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadClear()" title="Clear all text"
+                class="np-tool-btn text-rose-400/80 hover:text-rose-300">
+                <i class="fa-solid fa-eraser"></i><span class="hidden lg:inline ml-1">Clear</span>
+            </button>
+            <button onclick="notepadToggleWordWrap()" id="np-wordwrap-btn" title="Toggle Word Wrap"
+                class="np-tool-btn text-violet-400/80 hover:text-violet-300">
+                <i class="fa-solid fa-text-width"></i><span class="hidden lg:inline ml-1">Wrap</span>
+            </button>
+        </div>
+        <!-- Editor Area -->
+        <div class="flex-1 relative bg-slate-950/80 p-2">
+            <textarea id="notepad-editor" oninput="notepadOnInput()" onmouseup="npSaveSelection()"
+                onkeyup="npSaveSelection()" onkeydown="npSaveSelection()" onselect="npSaveSelection()"
+                onclick="npSaveSelection()" onfocus="npSaveSelection()"
+                class="w-full h-full bg-transparent text-slate-100 font-mono text-xs sm:text-sm p-2 sm:p-3 focus:outline-none resize-none leading-relaxed placeholder-slate-600"
+                placeholder="Type your notes or text here..."></textarea>
+        </div>
+        <!-- Status Bar -->
+        <div
+            class="h-7 bg-slate-950 border-t border-slate-800/80 px-3 sm:px-4 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <span>Words: <strong id="np-word-count" class="text-slate-200">0</strong></span>
+                <span>Characters: <strong id="np-char-count" class="text-slate-200">0</strong></span>
+            </div>
+            <div>UTF-8</div>
+        </div>
+    </div>
+
+    <!-- 3. CALCULATOR WINDOW -->
+    <div id="win-calculator"
+        class="app-window hidden absolute top-14 left-4 md:left-48 w-[92vw] sm:w-[380px] max-w-[380px] h-[520px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-calculator text-amber-400"></i>
+                <span>Calculator</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('calculator')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeApp('calculator')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Calculator Display -->
+        <div
+            class="p-4 bg-slate-950/70 border-b border-slate-800 flex flex-col justify-end text-right h-28 select-text">
+            <div id="calc-history-prev" class="text-xs text-slate-500 font-mono h-5 overflow-hidden"></div>
+            <div id="calc-display" class="text-3xl font-mono font-semibold text-slate-100 truncate">0</div>
+        </div>
+        <!-- Calc Grid Body -->
+        <div class="flex-1 p-3 grid grid-cols-4 gap-2 bg-slate-900/60 text-base font-semibold">
+            <button onclick="calcClear()"
+                class="bg-rose-900/40 hover:bg-rose-800/60 text-rose-300 rounded-lg border border-rose-800/50 transition">AC</button>
+            <button onclick="calcToggleSign()"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition">±</button>
+            <button onclick="calcPercent()"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition">%</button>
+            <button onclick="calcOp('÷')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">÷</button>
+
+            <button onclick="calcNum('7')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">7</button>
+            <button onclick="calcNum('8')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">8</button>
+            <button onclick="calcNum('9')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">9</button>
+            <button onclick="calcOp('×')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">×</button>
+
+            <button onclick="calcNum('4')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">4</button>
+            <button onclick="calcNum('5')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">5</button>
+            <button onclick="calcNum('6')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">6</button>
+            <button onclick="calcOp('−')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">−</button>
+
+            <button onclick="calcNum('1')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">1</button>
+            <button onclick="calcNum('2')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">2</button>
+            <button onclick="calcNum('3')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">3</button>
+            <button onclick="calcOp('+')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">+</button>
+
+            <button onclick="calcNum('0')"
+                class="col-span-2 bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">0</button>
+            <button onclick="calcDecimal()"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">.</button>
+            <button onclick="calcEquals()"
+                class="bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400 transition font-bold">=</button>
+        </div>
+        <!-- History Drawer Footer -->
+        <div class="h-16 bg-slate-950 border-t border-slate-800 px-3 py-1 text-xs overflow-y-auto">
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">History</div>
+            <div id="calc-history-list" class="space-y-0.5 text-slate-400 font-mono text-[11px]">
+                <div>No recent calculations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. TERMINAL WINDOW -->
+    <div id="win-terminal"
+        class="app-window hidden absolute top-14 left-4 md:left-64 w-[96vw] md:w-[760px] max-w-[96vw] md:max-w-[760px] h-[82vh] md:h-[460px] bg-slate-950/95 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-900 px-3 sm:px-4 border-b border-slate-800 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-terminal text-violet-400"></i>
+                <span>Nexus Terminal v1.0</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('terminal')"
+                    class="w-6 h-6 rounded hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('terminal')"
+                    class="w-6 h-6 rounded hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('terminal')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Terminal Screen Area -->
+        <div id="terminal-body"
+            class="flex-1 p-3 sm:p-4 font-mono text-xs text-emerald-400 overflow-y-auto space-y-2 select-text">
+            <div>Nexus Terminal v1.0 [Build 2026]</div>
+            <div>Type '<span class="text-yellow-300">help</span>' to see available commands.</div>
+            <br>
+            <div id="terminal-output" class="space-y-2"></div>
+            <!-- Input Prompt Line -->
+            <div class="flex items-center space-x-2 pt-1">
+                <span class="text-blue-400 font-bold">user@nexus:~$</span>
+                <input id="terminal-input" type="text" autocomplete="off" spellcheck="false"
+                    class="flex-1 bg-transparent text-slate-100 border-none outline-none font-mono text-xs focus:ring-0">
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. TASK MANAGER WINDOW -->
+    <div id="win-task-manager"
+        class="app-window hidden absolute top-14 left-4 md:left-72 w-[96vw] md:w-[740px] max-w-[96vw] md:max-w-[740px] h-[82vh] md:h-[480px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-chart-pie text-rose-400"></i>
+                <span>Task Manager</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('task-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('task-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('task-manager')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Tabs + Toolbar Header -->
+        <div
+            class="min-h-10 bg-slate-800/40 border-b border-slate-800 px-3 sm:px-4 flex items-center justify-between text-xs gap-2 flex-wrap py-1">
+            <div class="flex space-x-3 font-medium">
+                <button class="text-blue-400 border-b-2 border-blue-500 pb-1.5 pt-1 font-semibold">Processes</button>
+                <button
+                    class="text-slate-400 hover:text-slate-200 pb-1.5 pt-1 hidden sm:inline-block">Performance</button>
+                <button
+                    class="text-slate-400 hover:text-slate-200 pb-1.5 pt-1 hidden sm:inline-block">Applications</button>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="tmAddTask()"
+                    class="flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/30 hover:border-blue-400/50 text-[11px] px-2.5 py-1 rounded-lg transition font-medium">
+                    <i class="fa-solid fa-plus text-[10px]"></i> Add Task
+                </button>
+                <button onclick="tmRefresh()"
+                    class="flex items-center gap-1 text-slate-400 hover:text-white text-xs px-2 py-1 rounded hover:bg-slate-700/40 transition">
+                    <i class="fa-solid fa-rotate"></i><span class="hidden sm:inline"> Refresh</span>
+                </button>
+            </div>
+        </div>
+        <!-- Processes Table -->
+        <div class="flex-1 p-3 sm:p-4 overflow-x-auto">
+            <table class="min-w-[440px] w-full text-left text-xs text-slate-300">
+                <thead class="text-slate-500 uppercase text-[10px] border-b border-slate-800 font-bold">
+                    <tr>
+                        <th class="pb-2">Process</th>
+                        <th class="pb-2">CPU</th>
+                        <th class="pb-2">Memory</th>
+                        <th class="pb-2">Status</th>
+                        <th class="pb-2 text-right">Close</th>
+                    </tr>
+                </thead>
+                <tbody id="task-manager-list" class="divide-y divide-slate-800/60 font-mono">
+                    <!-- Dynamic Process Rows -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Footer System Overview Metrics -->
+        <div
+            class="h-10 bg-slate-950 border-t border-slate-800/80 px-4 sm:px-6 flex items-center justify-around text-[11px] sm:text-xs text-slate-400 font-mono">
+            <div>CPU: <strong id="tm-cpu-total" class="text-blue-400">11.2%</strong></div>
+            <div>Memory: <strong id="tm-mem-total" class="text-emerald-400">200 MB / 4 GB</strong></div>
+            <div class="hidden sm:block">Storage: <strong class="text-amber-400">68%</strong></div>
+        </div>
+    </div>
+
+    <!-- 6. TRASH WINDOW -->
+    <div id="win-trash"
+        class="app-window hidden absolute top-14 left-4 md:left-80 w-[96vw] md:w-[700px] max-w-[96vw] md:max-w-[700px] h-[82vh] md:h-[460px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-trash-can text-slate-400"></i>
+                <span>Trash</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('trash')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('trash')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('trash')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Toolbar -->
+        <div
+            class="min-h-10 bg-slate-800/40 border-b border-slate-800 px-3 sm:px-4 flex items-center justify-between text-xs py-1.5 gap-2">
+            <span class="text-slate-400 text-xs">Items in Trash: <strong id="trash-count"
+                    class="text-slate-200">0</strong></span>
+            <button onclick="trashEmptyAll()"
+                class="flex items-center gap-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/30 hover:border-rose-400/50 text-[11px] px-2.5 py-1 rounded-lg transition font-medium">
+                <i class="fa-solid fa-fire text-[10px]"></i> Empty Trash
+            </button>
+        </div>
+        <!-- Trash Content -->
+        <div class="flex-1 p-4 overflow-y-auto">
+            <div id="trash-item-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- BOTTOM DOCK / TASKBAR -->
+    <div
+        class="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-50 bg-slate-900/80 border border-slate-700/60 backdrop-blur-2xl rounded-2xl px-2.5 sm:px-4 py-1.5 sm:py-2 flex items-center space-x-1.5 sm:space-x-3 shadow-2xl max-w-[96vw] overflow-x-auto">
+        <button id="dock-launcher" onclick="toggleStartMenu()"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-blue-400 transition">
+            <i class="fa-solid fa-square-n text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span class="tooltip">Launcher</span>
+        </button>
+        <div class="w-px h-5 sm:h-6 bg-slate-700/70"></div>
+
+        <button onclick="openApp('file-manager')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-blue-400 transition">
+            <i class="fa-solid fa-folder-open text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-file-manager"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            <span class="tooltip">File Manager</span>
+        </button>
+
+        <button onclick="openApp('notepad')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-emerald-400 transition">
+            <i class="fa-solid fa-file-lines text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-notepad"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span class="tooltip">Notepad</span>
+        </button>
+
+        <button onclick="openApp('calculator')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-amber-400 transition">
+            <i class="fa-solid fa-calculator text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-calculator"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span class="tooltip">Calculator</span>
+        </button>
+
+        <button onclick="openApp('terminal')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-violet-400 transition">
+            <i class="fa-solid fa-terminal text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-terminal"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+            <span class="tooltip">Terminal</span>
+        </button>
+
+        <button onclick="openApp('task-manager')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-rose-400 transition">
+            <i class="fa-solid fa-chart-pie text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-task-manager"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+            <span class="tooltip">Task Manager</span>
+        </button>
+    </div>
+
+    <!-- START MENU MODAL -->
+    <div id="start-menu"
+        class="hidden fixed bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-50 w-[92vw] sm:w-[420px] max-w-[420px] bg-slate-900/95 border border-slate-700/80 backdrop-blur-2xl rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <div class="flex items-center space-x-3">
+                <div
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow text-sm">
+                    N</div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-100">user@nexus</div>
+                    <div class="text-xs text-slate-400">Personal Workspace</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-power-off text-rose-400 hover:text-rose-300 cursor-pointer p-2" title="Power Options"
+                onclick="nexusAlert('Nexus OS is running smoothly and all virtual systems are operational.', 'System Power', 'fa-solid fa-power-off text-rose-400')"></i>
+        </div>
+
+        <div>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 sm:mb-3">All Applications
+            </div>
+            <div class="grid grid-cols-4 gap-2 sm:gap-3">
+                <button onclick="openApp('file-manager'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-folder-open text-xl sm:text-2xl text-blue-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Files</span>
+                </button>
+                <button onclick="openApp('notepad'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-file-lines text-xl sm:text-2xl text-emerald-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Notes</span>
+                </button>
+                <button onclick="openApp('calculator'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-calculator text-xl sm:text-2xl text-amber-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Calculator</span>
+                </button>
+                <button onclick="openApp('terminal'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-terminal text-xl sm:text-2xl text-violet-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Terminal</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Recent Files</div>
+            <div class="space-y-1.5 text-xs text-slate-300">
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-800/50 cursor-pointer"
+                    onclick="openFileInNotepad('project.html'); toggleStartMenu()">
+                    <div class="flex items-center space-x-2"><i
+                            class="fa-solid fa-file-code text-blue-400"></i><span>project.html</span></div>
+                    <span class="text-[10px] text-slate-500">Documents</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-800/50 cursor-pointer"
+                    onclick="openFileInNotepad('notes.txt'); toggleStartMenu()">
+                    <div class="flex items-center space-x-2"><i
+                            class="fa-solid fa-file-lines text-emerald-400"></i><span>notes.txt</span></div>
+                    <span class="text-[10px] text-slate-500">Home</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SYSTEM TOAST CONTAINER -->
+    <div id="nexus-toast-container" class="fixed bottom-16 right-4 z-[999999] flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- SYSTEM MODAL CONTAINER -->
+    <div id="nexus-modal-overlay"
+        class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[99999] flex items-center justify-center p-3 sm:p-4 transition-all duration-200">
+        <div id="nexus-modal-card"
+            class="bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all duration-200">
+            <!-- Modal Header -->
+            <div
+                class="h-12 bg-slate-800/80 px-4 sm:px-5 border-b border-slate-700/60 flex items-center justify-between select-none">
+                <div class="flex items-center space-x-2.5 text-sm font-semibold text-slate-200">
+                    <i id="nexus-modal-icon" class="fa-solid fa-circle-info text-blue-400 text-base"></i>
+                    <span id="nexus-modal-title">System Message</span>
+                </div>
+                <button onclick="nexusModalClose(null)"
+                    class="w-6 h-6 rounded-lg hover:bg-rose-600/30 text-slate-400 hover:text-rose-300 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-4 sm:p-5 space-y-4 select-none">
+                <div id="nexus-modal-message" class="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
+
+                <!-- Input Container for Prompts -->
+                <div id="nexus-modal-input-container" class="hidden space-y-2">
+                    <label id="nexus-modal-input-label" class="block text-[11px] font-medium text-slate-400"></label>
+                    <input id="nexus-modal-input" type="text" autocomplete="off"
+                        class="w-full bg-slate-950/80 border border-slate-800 text-xs text-slate-100 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-500 transition font-sans">
+                    <textarea id="nexus-modal-textarea" rows="4"
+                        class="hidden w-full bg-slate-950/80 border border-slate-800 text-xs text-slate-100 rounded-xl p-3 focus:outline-none focus:border-blue-500 transition font-mono leading-relaxed resize-none"></textarea>
+                </div>
+
+                <!-- Selectable List Container for File Picker -->
+                <div id="nexus-modal-select-container"
+                    class="hidden max-h-48 overflow-y-auto space-y-1.5 border border-slate-800 bg-slate-950/60 rounded-xl p-2 select-text">
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div
+                class="h-14 bg-slate-950/80 border-t border-slate-800/80 px-4 sm:px-5 flex items-center justify-end space-x-3 select-none">
+                <button id="nexus-modal-btn-cancel" onclick="nexusModalClose(null)"
+                    class="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 transition">
+                    Cancel
+                </button>
+                <button id="nexus-modal-btn-confirm" onclick="nexusModalSubmit()"
+                    class="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 border border-blue-400/30 transition shadow-lg shadow-blue-500/20">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script src="app.js"></script>
+</body>
+
+</html>

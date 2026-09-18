@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus-Settings</title>
+
+<!-- Fonts used only by this module -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<!-- Real deliverable stylesheet: fully scoped under #nexus-settings-app -->
+<link rel="stylesheet" href="settings.css">
+
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+      radial-gradient(120% 90% at 80% 0%, rgba(255,176,102,0.18), transparent 60%),
+      linear-gradient(180deg, #14171d, #05060a);
+    font-family: "Inter", system-ui, sans-serif;
+  }
+</style>
+</head>
+<body>
+<section id="nexus-settings-app" class="ns-app" data-ns-theme="dark" data-ns-accent="amber" aria-label="Settings">
+
+  <header class="ns-titlebar">
+    <div class="ns-titlebar-id">
+      <span class="ns-titlebar-icon" aria-hidden="true">⚙</span>
+      <span>Settings</span>
+    </div>
+    <div class="ns-window-controls">
+      <button type="button" class="ns-win-btn ns-win-min" data-ns-action="minimize" aria-label="Minimize">–</button>
+      <button type="button" class="ns-win-btn ns-win-max" data-ns-action="maximize" aria-label="Maximize">▢</button>
+      <button type="button" class="ns-win-btn ns-win-close" data-ns-action="close" aria-label="Close">✕</button>
+    </div>
+  </header>
+
+  <div class="ns-body">
+
+    <aside class="ns-sidebar">
+      <button type="button" class="ns-profile-card" data-ns-go="accounts">
+        <span class="ns-avatar" id="ns-sidebar-avatar">A</span>
+        <span class="ns-profile-meta">
+          <span class="ns-profile-name" id="ns-sidebar-name">Alex</span><br>
+          <span class="ns-profile-sub">View my Nexus profile</span>
+        </span>
+      </button>
+
+      <div class="ns-search">
+        <input type="search" id="ns-search-input" placeholder="Find a setting" autocomplete="off" aria-label="Find a setting">
+      </div>
+
+      <nav class="ns-nav" id="ns-nav" aria-label="Settings categories">
+        <button type="button" class="ns-nav-item is-active" data-ns-go="home" data-ns-label="Home">
+          <span class="ns-nav-icon" aria-hidden="true">⌂</span><span class="ns-nav-label">Home</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="system" data-ns-label="System">
+          <span class="ns-nav-icon" aria-hidden="true">🖥</span><span class="ns-nav-label">System</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="bluetooth" data-ns-label="Bluetooth & devices">
+          <span class="ns-nav-icon" aria-hidden="true">≋</span><span class="ns-nav-label">Bluetooth &amp; devices</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="network" data-ns-label="Network & internet">
+          <span class="ns-nav-icon" aria-hidden="true">◈</span><span class="ns-nav-label">Network &amp; internet</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="personalization" data-ns-label="Personalization">
+          <span class="ns-nav-icon" aria-hidden="true">◐</span><span class="ns-nav-label">Personalization</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="apps" data-ns-label="Apps">
+          <span class="ns-nav-icon" aria-hidden="true">▦</span><span class="ns-nav-label">Apps</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="accounts" data-ns-label="Accounts">
+          <span class="ns-nav-icon" aria-hidden="true">☺</span><span class="ns-nav-label">Accounts</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="timelanguage" data-ns-label="Time & language">
+          <span class="ns-nav-icon" aria-hidden="true">◷</span><span class="ns-nav-label">Time &amp; language</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="privacy" data-ns-label="Privacy & security">
+          <span class="ns-nav-icon" aria-hidden="true">⛨</span><span class="ns-nav-label">Privacy &amp; security</span>
+        </button>
+        <div class="ns-nav-divider" role="presentation"></div>
+        <button type="button" class="ns-nav-item" data-ns-go="about" data-ns-label="About">
+          <span class="ns-nav-icon" aria-hidden="true">ⓘ</span><span class="ns-nav-label">About</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="ns-main">
+      <div class="ns-crumbs" id="ns-crumbs" aria-label="Breadcrumb"></div>
+      <div class="ns-content" id="ns-content"></div>
+    </main>
+
+  </div>
+
+  <!-- Hidden file input for avatar upload, triggered from the Accounts page -->
+  <input type="file" id="ns-avatar-input" accept="image/*" hidden>
+
+  <!-- Change password dialog (native <dialog>, opened from Accounts) -->
+  <dialog class="ns-dialog" id="ns-password-dialog">
+    <div class="ns-dialog-inner">
+      <div class="ns-dialog-steps-indicator" id="ns-dialog-steps">
+        <span data-step="1"></span><span data-step="2"></span><span data-step="3"></span>
+      </div>
+
+      <div class="ns-dialog-step is-active" data-ns-step="1">
+        <h3>Confirm it's you</h3>
+        <p class="ns-dialog-sub">Enter your current password to continue.</p>
+        <div class="ns-field">
+          <label for="ns-pw-current">Current password</label>
+          <input type="password" id="ns-pw-current" autocomplete="current-password">
+        </div>
+        <p class="ns-error-text" id="ns-pw-error-1"></p>
+        <div class="ns-btn-row">
+          <button type="button" class="ns-btn" data-ns-action="close-dialog">Cancel</button>
+          <button type="button" class="ns-btn ns-btn-primary" data-ns-action="pw-step1-next">Continue</button>
+        </div>
+      </div>
+
+      <div class="ns-dialog-step" data-ns-step="2">
+        <h3>Create a new password</h3>
+        <p class="ns-dialog-sub">Make it something you haven't used on Nexus before.</p>
+        <div class="ns-field">
+          <label for="ns-pw-new">New password</label>
+          <input type="password" id="ns-pw-new" autocomplete="new-password">
+          <div class="ns-strength"><div class="ns-strength-fill" id="ns-pw-strength-fill"></div></div>
+          <span class="ns-strength-label" id="ns-pw-strength-label">Too short</span>
+        </div>
+        <div class="ns-field">
+          <label for="ns-pw-confirm">Confirm new password</label>
+          <input type="password" id="ns-pw-confirm" autocomplete="new-password">
+        </div>
+        <p class="ns-error-text" id="ns-pw-error-2"></p>
+        <div class="ns-btn-row">
+          <button type="button" class="ns-btn" data-ns-action="pw-step2-back">Back</button>
+          <button type="button" class="ns-btn ns-btn-primary" data-ns-action="pw-step2-next">Save password</button>
+        </div>
+      </div>
+
+      <div class="ns-dialog-step" data-ns-step="3">
+        <div class="ns-success-check">
+          <svg viewBox="0 0 60 60" aria-hidden="true">
+            <circle cx="30" cy="30" r="26" />
+            <path id="ns-check-path" d="M18 31l8 8 16-18" />
+          </svg>
+        </div>
+        <h3 style="text-align:center">Password updated</h3>
+        <p class="ns-dialog-sub" style="text-align:center">You're all set — use it next time you sign in.</p>
+        <div class="ns-btn-row">
+          <button type="button" class="ns-btn ns-btn-primary" style="width:100%" data-ns-action="close-dialog">Done</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="ns-toast" id="ns-toast" role="status" aria-live="polite"></div>
+  <button type="button" class="ns-reopen-pill" id="ns-reopen-pill" hidden>⚙ Reopen Settings</button>
+
+</section>
+
+<script src="settings.js"></script>
+</body>
+</html>

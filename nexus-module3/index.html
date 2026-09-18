@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Nexus — Desktop</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Reusable vector icons. The SAME icons are used on the desktop and dock. -->
+<svg class="svg-sprite" aria-hidden="true">
+  <symbol id="folder" viewBox="0 0 48 48">
+    <path d="M5 12.5A4.5 4.5 0 0 1 9.5 8H19l4 5h15.5A4.5 4.5 0 0 1 43 17.5v18A4.5 4.5 0 0 1 38.5 40h-29A4.5 4.5 0 0 1 5 35.5z" fill="#55b8ff"/>
+    <path d="M5 18h38v17.5A4.5 4.5 0 0 1 38.5 40h-29A4.5 4.5 0 0 1 5 35.5z" fill="#2996e8"/>
+    <path d="M7 16h34" stroke="#9edcff" stroke-width="1.5" opacity=".8"/>
+  </symbol>
+  <symbol id="note" viewBox="0 0 48 48">
+    <rect x="8" y="5" width="32" height="38" rx="5" fill="#f5c66d"/>
+    <rect x="11" y="9" width="26" height="31" rx="3" fill="#fff1c8"/>
+    <path d="M16 17h16M16 23h16M16 29h11" stroke="#c99743" stroke-width="2" stroke-linecap="round"/>
+    <path d="M29 40l6-6" stroke="#b27b2c" stroke-width="2"/>
+  </symbol>
+  <symbol id="browser" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="19" fill="#55b9ff"/>
+    <circle cx="24" cy="24" r="15" fill="#173a62"/>
+    <circle cx="24" cy="24" r="10" fill="#55b9ff"/>
+    <path d="M13 30c5-1 12-5 20-15" stroke="#c8edff" stroke-width="2" fill="none"/>
+  </symbol>
+  <symbol id="terminal" viewBox="0 0 48 48">
+    <rect x="5" y="7" width="38" height="34" rx="7" fill="#25262b" stroke="#777" stroke-width="1.5"/>
+    <path d="M13 18l6 5-6 5M23 29h11" stroke="#92e69e" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="settings" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="8" fill="#d9dce3"/>
+    <path d="M24 6v7M24 35v7M6 24h7M35 24h7M11.3 11.3l5 5M31.7 31.7l5 5M36.7 11.3l-5 5M16.3 31.7l-5 5" stroke="#d9dce3" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="24" cy="24" r="4" fill="#292a2f"/>
+  </symbol>
+  <symbol id="calculator" viewBox="0 0 48 48">
+    <rect x="7" y="4" width="34" height="40" rx="6" fill="#d99a48"/>
+    <rect x="11" y="8" width="26" height="9" rx="2" fill="#fff0d0"/>
+    <g fill="#2a2a2d">
+      <rect x="12" y="21" width="5" height="5" rx="1"/><rect x="21.5" y="21" width="5" height="5" rx="1"/><rect x="31" y="21" width="5" height="5" rx="1"/>
+      <rect x="12" y="29" width="5" height="5" rx="1"/><rect x="21.5" y="29" width="5" height="5" rx="1"/><rect x="31" y="29" width="5" height="5" rx="1"/>
+      <rect x="12" y="37" width="5" height="3" rx="1"/><rect x="21.5" y="37" width="5" height="3" rx="1"/><rect x="31" y="37" width="5" height="3" rx="1"/>
+    </g>
+  </symbol>
+  <symbol id="taskmanager" viewBox="0 0 48 48">
+    <rect x="6" y="7" width="36" height="34" rx="5" fill="#e9a654"/>
+    <rect x="10" y="11" width="28" height="26" rx="2" fill="#292a2f"/>
+    <path d="M14 30V25M20 30V20M26 30V23M32 30V16" stroke="#ffd08c" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="trash" viewBox="0 0 48 48">
+    <path d="M12 13h24l-2 29H14z" fill="#d7d9df"/>
+    <path d="M9 10h30M18 6h12l2 4H16z" stroke="#ececf0" stroke-width="3" fill="none" stroke-linejoin="round"/>
+    <path d="M20 18v17M28 18v17" stroke="#9a9ba1" stroke-width="2"/>
+  </symbol>
+  <symbol id="search" viewBox="0 0 48 48">
+    <circle cx="21" cy="21" r="12" fill="none" stroke="#d9dce3" stroke-width="4"/>
+    <path d="M30 30l10 10" stroke="#d9dce3" stroke-width="4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="nexus" viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="21" fill="#121319" stroke="#ffb45e" stroke-width="1.5"/>
+    <path d="M13 31c4-9 8-14 13-14 6 0 9 7 9 15" fill="none" stroke="#ffb45e" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="24" cy="24" r="4" fill="#ffd49d"/>
+  </symbol>
+</svg>
+
+<main class="desktop" id="desktop">
+  <header class="topbar">
+    <div class="top-left">
+      <img class="brand-logo" src="assets/nexus-logo.jpeg" alt="Nexus">
+      <span class="brand-name">Nexus</span>
+      <span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span>
+    </div>
+    <div class="top-right">
+      <span class="wifi" title="Wi-Fi"></span>
+      <span class="bluetooth" title="Bluetooth">ᛒ</span>
+      <span class="volume" title="Sound">◖))</span>
+      <time id="topClock">11:42 AM</time>
+    </div>
+  </header>
+
+  <section class="desktop-area" id="desktopArea">
+    <!-- Desktop icons use exactly the same SVG icons as the dock. -->
+    <button class="desktop-icon" draggable="false" data-app="Files" style="left:28px;top:58px">
+      <span class="desktop-art"><svg><use href="#folder"/></svg></span><span>Files</span>
+    </button>
+    <button class="desktop-icon" draggable="false" data-app="Notepad" style="left:28px;top:148px">
+      <span class="desktop-art"><svg><use href="#note"/></svg></span><span>Notepad</span>
+    </button>
+    <button class="desktop-icon" draggable="false" data-app="Browser" style="left:28px;top:238px">
+      <span class="desktop-art"><svg><use href="#browser"/></svg></span><span>Browser</span>
+    </button>
+    <button class="desktop-icon" draggable="false" data-app="Settings" style="left:28px;top:328px">
+      <span class="desktop-art"><svg><use href="#settings"/></svg></span><span>Settings</span>
+    </button>
+    <button class="desktop-icon" draggable="false" data-app="Calculator" style="left:28px;top:418px">
+      <span class="desktop-art"><svg><use href="#calculator"/></svg></span><span>Calculator</span>
+    </button>
+    <button class="desktop-icon" draggable="false" data-app="Task Manager" style="left:125px;top:58px">
+      <span class="desktop-art"><svg><use href="#taskmanager"/></svg></span><span>Task Manager</span>
+    </button>
+    <button class="desktop-icon" draggable="false" data-app="Terminal" style="left:125px;top:148px">
+      <span class="desktop-art"><svg><use href="#terminal"/></svg></span><span>Terminal</span>
+    </button>
+  </section>
+
+  <aside class="widgets">
+    <div class="weather-card"><span class="weather-sun">☀</span><div><strong>28°</strong><small>Trichy</small><em>Mostly Clear</em></div></div>
+    <div class="calendar-card">
+      <div class="calendar-head"><span id="calendarMonth">September 2026</span><b>›</b></div>
+      <div class="week"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+      <div class="days" id="calendarDays"></div>
+    </div>
+  </aside>
+
+  <div class="context-menu" id="contextMenu">
+    <button data-action="open">Open</button>
+    <button data-action="rename">Rename</button>
+    <button data-action="shortcut">Create shortcut</button>
+    <div class="menu-line"></div>
+    <button data-action="delete" class="delete">Delete</button>
+  </div>
+
+  <section class="launcher" id="launcher">
+    <div class="launcher-search"><svg><use href="#search"/></svg><input id="appSearch" placeholder="Search applications and files"></div>
+    <h4>Pinned</h4>
+    <div class="launcher-grid">
+      <button class="launcher-app" data-app="Files"><svg><use href="#folder"/></svg><span>Files</span></button>
+      <button class="launcher-app" data-app="Terminal"><svg><use href="#terminal"/></svg><span>Terminal</span></button>
+      <button class="launcher-app" data-app="Notepad"><svg><use href="#note"/></svg><span>Notepad</span></button>
+      <button class="launcher-app" data-app="Browser"><svg><use href="#browser"/></svg><span>Browser</span></button>
+      <button class="launcher-app" data-app="Calculator"><svg><use href="#calculator"/></svg><span>Calculator</span></button>
+      <button class="launcher-app" data-app="Settings"><svg><use href="#settings"/></svg><span>Settings</span></button>
+      <button class="launcher-app" data-app="Task Manager"><svg><use href="#taskmanager"/></svg><span>Task Manager</span></button>
+    </div>
+    <h4>Recent</h4>
+    <button class="recent" data-app="project.html"><span>▣</span> project.html <small>Today, 10:24 AM</small></button>
+  </section>
+
+  <section class="app-window" id="appWindow">
+    <div class="window-head"><div class="dots"><i></i><i></i><i></i></div><strong id="windowTitle">Files</strong><button id="closeWindow">×</button></div>
+    <div class="window-body" id="windowBody"></div>
+  </section>
+
+  <!-- Nexus dock: app icons match the desktop icons. System tray is separated on the right. -->
+  <footer class="dock">
+    <button class="nexus-start" id="nexusButton" title="Nexus Launcher"><img src="assets/nexus-logo.jpeg" alt="Nexus"></button>
+    <button class="dock-app" data-app="Files" title="Files"><svg><use href="#folder"/></svg><i></i></button>
+    <button class="dock-app" data-app="Notepad" title="Notepad"><svg><use href="#note"/></svg><i></i></button>
+    <button class="dock-app" data-app="Browser" title="Browser"><svg><use href="#browser"/></svg><i></i></button>
+    <button class="dock-app" data-app="Terminal" title="Terminal"><svg><use href="#terminal"/></svg><i></i></button>
+    <button class="dock-app" data-app="Settings" title="Settings"><svg><use href="#settings"/></svg><i></i></button>
+    <button class="dock-app" data-app="Calculator" title="Calculator"><svg><use href="#calculator"/></svg><i></i></button>
+    <button class="dock-app" data-app="Task Manager" title="Task Manager"><svg><use href="#taskmanager"/></svg><i></i></button>
+    <button class="dock-app" data-app="Trash" title="Trash"><svg><use href="#trash"/></svg><i></i></button>
+
+    <div class="dock-spacer"></div>
+    <div class="tray">
+      <span class="tray-wifi" title="Wi-Fi"></span>
+      <span class="tray-bluetooth">ᛒ</span>
+      <span class="tray-volume">◖))</span>
+      <time id="taskClock">11:42 AM<br><small>Mon, 15 Sep</small></time>
+    </div>
+  </footer>
+</main>
+<script src="script.js"></script>
+</body>
+</html>

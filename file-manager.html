@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - File Manager</title>
+    <link rel="stylesheet" href="./css/file-manager.css"/>
+</head>
+
+<body>
+    <!-- Drag & drop overlay, shown while a file is dragged over the window -->
+    <div id="dropOverlay" class="drop-overlay hidden">
+        <div class="drop-overlay-inner">
+            <strong>Drop files anywhere to upload</strong>
+            <span>You can also use the "Upload" button up top</span>
+        </div>
+    </div>
+
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="brand">
+                <span><img src="./assets/logo/N-logo.png" alt="N" class="brand-mark"></span><span>NEXUS</span>
+            </div>
+
+            <div class="search-box">
+                <svg viewBox="0 0 24 24"><use href="#search-icon"></use></svg>
+                <input id="searchInput" type="search" placeholder="Search your files here...">
+            </div>
+
+            <div class="top-actions">
+                <div class="notif-wrap">
+                    <button id="notifBtn" class="icon-btn" title="Notifications">
+                        <svg>
+                            <use href="#bell-icon"></use>
+                        </svg>
+                        <span id="notifBadge" class="notif-badge hidden">0</span>
+                    </button>
+                    <div id="notifDropdown" class="notif-dropdown hidden">
+                        <div class="notif-dropdown-head">
+                            <strong>Notifications</strong>
+                            <button id="markReadBtn" class="text-btn" type="button">Mark all read</button>
+                        </div>
+                        <div id="notifList"></div>
+                    </div>
+                </div>
+                <div class="profile-wrap">
+                    <button id="profileBtn" class="profile-btn" title="User profile"><span
+                            id="profileAvatar">U</span></button>
+                    <div id="profileMenu" class="profile-menu hidden">
+                        <strong id="profileName">User</strong><small id="profileEmail">user@nexus</small>
+                        <hr>
+                        <label class="menu-label" for="switchUserSelect">Switch user</label>
+                        <select id="switchUserSelect" class="menu-select"></select>
+                        <hr>
+                        <button type="button">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="workspace">
+            <aside class="sidebar">
+                <div class="history-buttons">
+                    <button class="back-btn" id="backBtn" title="Back">←</button>
+                    <button class="forward-btn" id="forwardBtn" title="Forward">→</button>
+                </div>
+
+                <nav>
+                    <button class="nav-item active" view="home">
+                        <svg><use href="#home-icon"></use></svg>
+                        <span>Home</span>
+                    </button>
+                    <button class="nav-item" view="documents">
+                        <svg><use href="#file-icon"></use></svg>
+                        <span>Documents</span>
+                    </button>
+                    <button class="nav-item" view="projects">
+                        <svg><use href="#folder-icon"></use></svg>
+                        <span>Projects</span>
+                    </button>
+                    <button class="nav-item" view="pictures">
+                        <svg><use href="#image-icon"></use></svg>
+                        <span>Pictures</span>
+                    </button>
+                    <button class="nav-item" view="audio">
+                        <svg><use href="#audio-icon"></use></svg>
+                        <span>Audio</span>
+                    </button>
+                    <button class="nav-item" view="videos">
+                        <svg><use href="#video-icon"></use></svg>
+                        <span>Videos</span>
+                    </button>
+                    <button class="nav-item" view="logs">
+                        <svg><use href="#activity-icon"></use></svg>
+                        <span>Activity Log</span>
+                    </button>
+                    <button class="nav-item" view="trash">
+                        <svg><use href="#trash-icon"></use></svg>
+                        <span>Recycle Bin</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <section class="content">
+                <div class="page-heading">
+                    <div>
+                        <div class="breadcrumb" id="breadcrumb">Home</div>
+                        <h1 id="pageTitle">Home</h1>
+                        <p>Store, organize and work together in a unified space.</p>
+                    </div>
+                    <div class="heading-actions" id="headingActions">
+                        <button class="secondary-btn" id="uploadBtn"> Upload</button>
+                        <button class="secondary-btn" id="newFolderBtn">＋ Folder</button>
+                        <button class="primary-btn" id="newFileBtn">＋ New</button>
+                        <input id="fileInput" type="file" multiple hidden />
+                    </div>
+                </div>
+
+                <div id="homeView">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <h2>Quick Access</h2><span>Organize your files</span>
+                        </div>
+                        <div class="folder-grid" id="folderGrid"></div>
+                    </section>
+
+                    <section class="panel">
+                        <div class="panel-header">
+                            <h2>Recent Files</h2><button class="text-btn" view="logs">View activity →</button>
+                        </div>
+                        <div class="file-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Modified by</th>
+                                        <th>Modified</th>
+                                        <th>Size</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentFiles"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <div id="categoryView" class="hidden">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <h2 id="categoryTitle">Files</h2>
+                            <span id="categoryCount"></span>
+                            <div class="task-controls">
+                                <select id="categoryTagFilter" class="menu-select">
+                                    <option value="all">All tags</option>
+                                </select>
+                                <select id="categorySort" class="menu-select">
+                                    <option value="name-asc">Name (A-Z)</option>
+                                    <option value="name-desc">Name (Z-A)</option>
+                                    <option value="newest">Newest first</option>
+                                    <option value="oldest">Oldest first</option>
+                                    <option value="size">Largest size first</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="file-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Member</th>
+                                        <th>Modified</th>
+                                        <th>Size</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoryFiles"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <div id="searchView" class="hidden">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Search Results</h2><span id="searchSummary"></span>
+                            </div>
+                        </div>
+                        <div id="searchResults" class="search-results"></div>
+                    </section>
+                </div>
+
+                <div id="logsView" class="hidden">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Activity Log</h2><span>Grouped by user — who changed what and when</span>
+                            </div>
+                        </div>
+                        <div class="log-toolbar">
+                            <label for="logUserFilter">Show user</label>
+                            <select id="logUserFilter">
+                                <option value="all">All users</option>
+                            </select>
+                        </div>
+                        <div id="logPreview" class="log-list"></div>
+                    </section>
+                </div>
+
+                <div id="trashView" class="hidden">
+                    <section class="panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2>Recycle Bin</h2>
+                                <span>Files stay here for 15 days, then are removed automatically</span>
+                            </div>
+                            <span id="trashCount"></span>
+                        </div>
+                        <div class="file-table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Owner</th>
+                                        <th>Time left</th>
+                                        <th>Size</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trashFiles"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modalOverlay" class="modal-overlay hidden">
+        <div class="modal"><button class="modal-close" id="modalClose" title="Close">×</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Toast pop-ups render here, bottom-right of the screen -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <svg class="svg-sprite">
+        <symbol id="search-icon" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <path d="m16 16 5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </symbol>
+        <symbol id="bell-icon" viewBox="0 0 24 24">
+            <path d="M6 17h12l-1.2-1.8V10a4.8 4.8 0 0 0-9.6 0v5.2L6 17Z" fill="none" stroke="currentColor"
+                stroke-width="1.6" />
+            <path d="M10 20h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </symbol>
+        <symbol id="home-icon" viewBox="0 0 24 24">
+            <path d="m4 10 8-6 8 6v9H4z" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="M9 19v-5h6v5" fill="none" stroke="currentColor" stroke-width="1.6" />
+        </symbol>
+        <symbol id="file-icon" viewBox="0 0 24 24">
+            <path d="M6 3h8l4 4v14H6z" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="M14 3v5h4M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.6" />
+        </symbol>
+        <symbol id="folder-icon" viewBox="0 0 24 24">
+            <path d="M3 6h7l2 2h9v11H3z" fill="none" stroke="currentColor" stroke-width="1.6" />
+        </symbol>
+        <symbol id="image-icon" viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="9" cy="9" r="1.5" fill="currentColor" />
+            <path d="m5 17 5-5 3.5 3 2.5-2 3 4" fill="none" stroke="currentColor" stroke-width="1.6" />
+        </symbol>
+        <symbol id="audio-icon" viewBox="0 0 24 24">
+            <path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <circle cx="16.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+        </symbol>
+        <symbol id="video-icon" viewBox="0 0 24 24">
+            <rect x="3" y="6" width="13" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="m16 10 5-3v10l-5-3z" fill="none" stroke="currentColor" stroke-width="1.6" />
+        </symbol>
+        <symbol id="activity-icon" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </symbol>
+        <symbol id="trash-icon" viewBox="0 0 24 24">
+            <path d="M5 7h14M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M7 7l1 13a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-13"
+                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </symbol>
+    </svg>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="./js/file-manager.js"></script>
+</body>
+</html>

@@ -1,13 +1,47 @@
+/* ================================================================
+   NEXUS SETTINGS APP
+   Runs inside a Nexus window (created by the core Window Manager).
+
+   How it connects to the core (no core files need editing):
+   - Registers the "settings" app with window.nexusAppManager
+   - Mounts itself when the core emits  nexus:window:created
+   - Cleans up when the core emits      nexus:window:closed
+   - Settings are saved through State Manager  (nexusSettings)
+   - Name / photo / password are saved through Auth Manager (nexusUser)
+
+   Load order in index.html: after app-manager.js.
+================================================================ */
+
 (function () {
   "use strict";
 
-  if (window.NexusSettings) return; // guard against double-injection
+  if (window.NexusSettings) return; // guard against double-loading
 
-  const APP = document.getElementById("nexus-settings-app");
-  if (!APP) return;
+  const CoreState = window.nexusStateManager || null;
+  const CoreAuth = window.nexusAuthManager || null;
+  const CoreApp = window.nexusAppManager || null;
 
-    //  Labels + accent palette (single source of truth for breadcrumbs/nav)
-    
+  if (!CoreState || !CoreAuth || !CoreApp) {
+    console.error(
+      "Nexus Settings: core managers not found. Load settings.js after app-manager.js."
+    );
+    return;
+  }
+
+  const APP_ID = "settings";
+
+  /* ----------------------------------------------------------------
+     Module state (reset every time the window is opened)
+  ---------------------------------------------------------------- */
+  let APP = null;        // root element of the mounted Settings window
+  let state = null;      // page state for the current mount
+  let mountId = 0;       // increases on mount/unmount so old timers can be ignored
+  let clockTimer = null;
+  let toastTimer = null;
+
+  /* ----------------------------------------------------------------
+     Labels + accent palette
+  ---------------------------------------------------------------- */
   const LABELS = {
     home: "Home",
     system: "System",
@@ -34,121 +68,142 @@
     azure: { c1: "#8fc7ff", c2: "#3b82f6" },
   };
 
-  const CoreState = window.nexusStateManager || null;
-  const CoreAuth = window.nexusAuthManager || null;
-  const CoreWindow = window.nexusWindowManager || null;
-  const CoreApp = window.nexusAppManager || null;
-  const CoreEvents = window.nexusEventSystem || window.nexusEventBus || null;
+  /* ----------------------------------------------------------------
+     Window markup (the core puts this inside .window-content)
+  ---------------------------------------------------------------- */
+  const SETTINGS_HTML = `
+<section id="nexus-settings-app" class="ns-app" data-ns-theme="dark" data-ns-accent="amber" aria-label="Settings">
 
-  // Reads one setting. Core's bag first, local fallback only if Core isn't here yet.
-  function readSetting(key, fallback) {
-    if (CoreState && typeof CoreState.getSettings === "function") {
-      const all = CoreState.getSettings() || {};
-      return key in all ? all[key] : fallback;
-    }
-    const raw = localStorage.getItem("ns-fallback-" + key);
-    if (raw === null) return fallback;
-    try { return JSON.parse(raw); } catch (e) { return raw; }
-  }
+  <div class="ns-body">
 
-  // Writes one setting through Core (which is expected to notify the Event
-  // System itself). Only emits manually when Core isn't present, so we
-  // don't double-notify once the real State Manager is wired in.
-  function writeSetting(key, value) {
-    if (CoreState && typeof CoreState.updateSetting === "function") {
-      CoreState.updateSetting(key, value);
-    } else {
-      localStorage.setItem("ns-fallback-" + key, JSON.stringify(value));
-      emitEvent("settings:changed", { key, value });
-    }
-  }
+    <aside class="ns-sidebar">
+      <button type="button" class="ns-profile-card" data-ns-go="accounts">
+        <span class="ns-avatar" id="ns-sidebar-avatar">N</span>
+        <span class="ns-profile-meta">
+          <span class="ns-profile-name" id="ns-sidebar-name">User</span><br>
+          <span class="ns-profile-sub">View my Nexus profile</span>
+        </span>
+      </button>
 
-  function emitEvent(name, detail) {
-    if (CoreEvents && typeof CoreEvents.emit === "function") {
-      CoreEvents.emit(name, detail);
-    } else {
-      document.dispatchEvent(new CustomEvent("nexus:" + name, { detail }));
-    }
-  }
+      <div class="ns-search">
+        <input type="search" id="ns-search-input" placeholder="Find a setting" autocomplete="off" aria-label="Find a setting">
+      </div>
 
-  function getCurrentUser() {
-    if (CoreAuth && typeof CoreAuth.getUser === "function") {
-      const u = CoreAuth.getUser() || {};
-      return { name: u.name || "Alex", username: u.username || u.email || "alex@nexus", avatar: u.avatar || "" };
-    }
-    return {
-      name: readSetting("profile-name", "Alex"),
-      username: readSetting("profile-username", "alex@nexus"),
-      avatar: readSetting("profile-avatar", ""),
-    };
-  }
+      <nav class="ns-nav" id="ns-nav" aria-label="Settings categories">
+        <button type="button" class="ns-nav-item is-active" data-ns-go="home" data-ns-label="Home">
+          <span class="ns-nav-icon" aria-hidden="true">⌂</span><span class="ns-nav-label">Home</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="system" data-ns-label="System">
+          <span class="ns-nav-icon" aria-hidden="true">🖥</span><span class="ns-nav-label">System</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="bluetooth" data-ns-label="Bluetooth & devices">
+          <span class="ns-nav-icon" aria-hidden="true">≋</span><span class="ns-nav-label">Bluetooth &amp; devices</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="network" data-ns-label="Network & internet">
+          <span class="ns-nav-icon" aria-hidden="true">◈</span><span class="ns-nav-label">Network &amp; internet</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="personalization" data-ns-label="Personalization">
+          <span class="ns-nav-icon" aria-hidden="true">◐</span><span class="ns-nav-label">Personalization</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="apps" data-ns-label="Apps">
+          <span class="ns-nav-icon" aria-hidden="true">▦</span><span class="ns-nav-label">Apps</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="accounts" data-ns-label="Accounts">
+          <span class="ns-nav-icon" aria-hidden="true">☺</span><span class="ns-nav-label">Accounts</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="timelanguage" data-ns-label="Time & language">
+          <span class="ns-nav-icon" aria-hidden="true">◷</span><span class="ns-nav-label">Time &amp; language</span>
+        </button>
+        <button type="button" class="ns-nav-item" data-ns-go="privacy" data-ns-label="Privacy & security">
+          <span class="ns-nav-icon" aria-hidden="true">⛨</span><span class="ns-nav-label">Privacy &amp; security</span>
+        </button>
+        <div class="ns-nav-divider" role="presentation"></div>
+        <button type="button" class="ns-nav-item" data-ns-go="about" data-ns-label="About">
+          <span class="ns-nav-icon" aria-hidden="true">ⓘ</span><span class="ns-nav-label">About</span>
+        </button>
+      </nav>
+    </aside>
 
-  // Identity fields (name/username/avatar) are supposed to live in Auth,
-  // per the doc — GUESSED updateUser() signature, confirm with Core owner.
-  function updateCurrentUser(patch) {
-    if (CoreAuth && typeof CoreAuth.updateUser === "function") {
-      CoreAuth.updateUser(patch);
-    } else {
-      if ("name" in patch) writeSetting("profile-name", patch.name);
-      if ("username" in patch) writeSetting("profile-username", patch.username);
-      if ("avatar" in patch) writeSetting("profile-avatar", patch.avatar);
-    }
-    emitEvent("profile:changed", patch);
-  }
+    <main class="ns-main">
+      <div class="ns-crumbs" id="ns-crumbs" aria-label="Breadcrumb"></div>
+      <div class="ns-content" id="ns-content"></div>
+    </main>
 
-  // Old localStorage-keyed persist() calls all through this file now route
-  // through the adapter above instead of owning a second settings system.
-  function persist(key, value) {
-    writeSetting(key.replace(/^ns-/, ""), value);
-  }
+  </div>
 
-  const state = {
-    path: [], // e.g. ["system", "display"]
-    pendingHighlight: null,
-    theme: readSetting("theme", "dark"),
-    accent: readSetting("accent", "amber"),
-    wallpaper: readSetting("wallpaper", "1"),
-    profile: getCurrentUser(),
-    toggles: Object.assign(
-      {
-        "bluetooth-master": true,
-        "wifi-master": true,
-        "airplane-mode": false,
-        "night-light": false,
-        "notif-master": true,
-        "notif-terminal": true,
-        "notif-notes": true,
-        "notif-filemanager": false,
-        "priv-location": true,
-        "priv-camera": true,
-        "priv-mic": false,
-        "priv-activity": true,
-        "battery-saver": false,
-        "screensaver": true,
-        "clock-24h": false,
-      },
-      readSetting("toggles", {})
-    ),
-    sliders: Object.assign(
-      { brightness: 80, volume: 62 },
-      readSetting("sliders", {})
-    ),
-    storage: Object.assign(
-      { apps: 18, docs: 12, media: 26, system: 12 }, // % of capacity, sums to "used"
-      readSetting("storage", {})
-    ),
-    btDevices: [
-      { id: "buds", name: "Nexus Buds Pro", type: "Audio", connected: true },
-      { id: "kbd", name: "Nexus Keyboard", type: "Input", connected: true },
-    ],
-    scanning: false,
-    clockTimer: null,
+  <input type="file" id="ns-avatar-input" accept="image/*" hidden>
+
+  <dialog class="ns-dialog" id="ns-password-dialog">
+    <div class="ns-dialog-inner">
+      <div class="ns-dialog-steps-indicator" id="ns-dialog-steps">
+        <span data-step="1"></span><span data-step="2"></span><span data-step="3"></span>
+      </div>
+
+      <div class="ns-dialog-step is-active" data-ns-step="1">
+        <h3>Confirm it's you</h3>
+        <p class="ns-dialog-sub">Enter your current password to continue.</p>
+        <div class="ns-field">
+          <label for="ns-pw-current">Current password</label>
+          <input type="password" id="ns-pw-current" autocomplete="current-password">
+        </div>
+        <p class="ns-error-text" id="ns-pw-error-1"></p>
+        <div class="ns-btn-row">
+          <button type="button" class="ns-btn" data-ns-action="close-dialog">Cancel</button>
+          <button type="button" class="ns-btn ns-btn-primary" data-ns-action="pw-step1-next">Continue</button>
+        </div>
+      </div>
+
+      <div class="ns-dialog-step" data-ns-step="2">
+        <h3>Create a new password</h3>
+        <p class="ns-dialog-sub">Make it something you haven't used on Nexus before.</p>
+        <div class="ns-field">
+          <label for="ns-pw-new">New password</label>
+          <input type="password" id="ns-pw-new" autocomplete="new-password">
+          <div class="ns-strength"><div class="ns-strength-fill" id="ns-pw-strength-fill"></div></div>
+          <span class="ns-strength-label" id="ns-pw-strength-label">Too short</span>
+        </div>
+        <div class="ns-field">
+          <label for="ns-pw-confirm">Confirm new password</label>
+          <input type="password" id="ns-pw-confirm" autocomplete="new-password">
+        </div>
+        <p class="ns-error-text" id="ns-pw-error-2"></p>
+        <div class="ns-btn-row">
+          <button type="button" class="ns-btn" data-ns-action="pw-step2-back">Back</button>
+          <button type="button" class="ns-btn ns-btn-primary" data-ns-action="pw-step2-next">Save password</button>
+        </div>
+      </div>
+
+      <div class="ns-dialog-step" data-ns-step="3">
+        <div class="ns-success-check">
+          <svg viewBox="0 0 60 60" aria-hidden="true">
+            <circle cx="30" cy="30" r="26" />
+            <path id="ns-check-path" d="M18 31l8 8 16-18" />
+          </svg>
+        </div>
+        <h3 style="text-align:center">Password updated</h3>
+        <p class="ns-dialog-sub" style="text-align:center">You're all set — use it next time you sign in.</p>
+        <div class="ns-btn-row">
+          <button type="button" class="ns-btn ns-btn-primary" style="width:100%" data-ns-action="close-dialog">Done</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="ns-toast" id="ns-toast" role="status" aria-live="polite"></div>
+
+</section>`;
+
+  /* ----------------------------------------------------------------
+     Small helpers (all DOM lookups are scoped to the mounted window)
+  ---------------------------------------------------------------- */
+  const $ = (sel, ctx) => {
+    const root = ctx || APP;
+    return root ? root.querySelector(sel) : null;
   };
-
-    //  Small helpers
-    
-  const $ = (sel, ctx) => (ctx || APP).querySelector(sel);
-  const $all = (sel, ctx) => Array.from((ctx || APP).querySelectorAll(sel));
+  const $all = (sel, ctx) => {
+    const root = ctx || APP;
+    return root ? Array.from(root.querySelectorAll(sel)) : [];
+  };
 
   function escapeHTML(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
@@ -156,27 +211,140 @@
     }[c]));
   }
 
-  /* ----------------------------------------------------------------------
-     Theme + accent
-     -------------------------------------------------------------------- */
-  function applyTheme(theme) {
+  // setTimeout that does nothing if the window was closed / reopened meanwhile
+  function later(fn, ms) {
+    const id = mountId;
+    return setTimeout(() => {
+      if (APP && id === mountId) fn();
+    }, ms);
+  }
+
+  function emitEvent(name, detail) {
+    document.dispatchEvent(new CustomEvent("nexus:" + name, { detail }));
+  }
+
+  /* ----------------------------------------------------------------
+     Core adapters: settings (State Manager) + identity (Auth Manager)
+  ---------------------------------------------------------------- */
+
+  // Core's defaults contain null values (e.g. wallpaper), so treat null as "not set".
+  function readSetting(key, fallback) {
+    const all = CoreState.getSettings() || {};
+    const value = all[key];
+    return value === undefined || value === null ? fallback : value;
+  }
+
+  // updateSetting() only changes memory, so we also call saveSettings().
+  function writeSetting(key, value) {
+    CoreState.updateSetting(key, value);
+    CoreState.saveSettings();
+    emitEvent("settings:changed", { key, value });
+  }
+
+  function persist(key, value) {
+    writeSetting(key.replace(/^ns-/, ""), value);
+  }
+
+  function getCurrentUser() {
+    const u = CoreAuth.getUser() || {};
+    const name = u.name || "User";
+    const fallbackUsername = name.toLowerCase().replace(/\s+/g, "") + "@nexus";
+    return {
+      name,
+      username: readSetting("profile-username", fallbackUsername),
+      avatar: u.avatar || "",
+    };
+  }
+
+  // Name + photo live in the Auth Manager's user record; username lives in settings.
+  // Returns false if the user record could not be saved.
+  function updateCurrentUser(patch) {
+    let ok = true;
+
+    const identity = {};
+    if ("name" in patch) identity.name = patch.name;
+    if ("avatar" in patch) identity.avatar = patch.avatar;
+
+    if (Object.keys(identity).length) {
+      const user = CoreAuth.getUser();
+      ok = user ? CoreAuth.saveUser({ ...user, ...identity }) : false;
+    }
+
+    if ("username" in patch) writeSetting("profile-username", patch.username);
+
+    emitEvent("profile:changed", patch);
+
+    // refresh the desktop top bar + greeting
+    if (window.Nexus) {
+      window.Nexus.updateDesktopAvatar?.();
+      window.Nexus.updateDesktopGreeting?.();
+    }
+    return ok;
+  }
+
+  function createState() {
+    const theme = readSetting("theme", "dark");
+    return {
+      path: [],
+      pendingHighlight: null,
+      theme: ["light", "dark", "system"].includes(theme) ? theme : "dark",
+      accent: readSetting("accent", "amber"),
+      wallpaper: String(readSetting("wallpaper", "1")),
+      profile: getCurrentUser(),
+      toggles: Object.assign(
+        {
+          "bluetooth-master": true,
+          "wifi-master": true,
+          "airplane-mode": false,
+          "night-light": false,
+          "notif-master": true,
+          "notif-terminal": true,
+          "notif-notes": true,
+          "notif-filemanager": false,
+          "priv-location": true,
+          "priv-camera": true,
+          "priv-mic": false,
+          "priv-activity": true,
+          "battery-saver": false,
+          "screensaver": true,
+          "clock-24h": false,
+        },
+        readSetting("toggles", {})
+      ),
+      sliders: Object.assign({ brightness: 80, volume: 62 }, readSetting("sliders", {})),
+      storage: Object.assign(
+        { apps: 18, docs: 12, media: 26, system: 12 },
+        readSetting("storage", {})
+      ),
+      btDevices: [
+        { id: "buds", name: "Nexus Buds Pro", type: "Audio", connected: true },
+        { id: "kbd", name: "Nexus Keyboard", type: "Input", connected: true },
+      ],
+      scanning: false,
+    };
+  }
+
+  /* ----------------------------------------------------------------
+     Theme + accent (silent = true means "don't save / don't emit")
+  ---------------------------------------------------------------- */
+  function applyTheme(theme, silent) {
     let resolved = theme;
     if (theme === "system") {
       resolved = window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
     }
     APP.dataset.nsTheme = resolved;
     state.theme = theme;
-    persist("ns-theme", theme);
+    if (!silent) persist("ns-theme", theme);
   }
 
-  function applyAccent(id) {
+  function applyAccent(id, silent) {
     const palette = ACCENTS[id] || ACCENTS.amber;
     APP.style.setProperty("--ns-accent-1", palette.c1);
     APP.style.setProperty("--ns-accent-2", palette.c2);
     APP.style.setProperty("--ns-accent-solid", palette.c2);
     APP.dataset.nsAccent = id;
     state.accent = id;
-    persist("ns-accent", id);
+    if (!silent) persist("ns-accent", id);
   }
 
   function setThemeWithTransition(theme) {
@@ -187,10 +355,11 @@
     }
   }
 
- 
-    //  Navigation: path array + breadcrumbs
-   
+  /* ----------------------------------------------------------------
+     Navigation: path array + breadcrumbs
+  ---------------------------------------------------------------- */
   function navigate(path, opts) {
+    if (!APP) return;
     state.path = path;
     state.pendingHighlight = (opts && opts.highlight) || null;
     renderCrumbs();
@@ -200,6 +369,7 @@
 
   function renderCrumbs() {
     const crumbs = $("#ns-crumbs");
+    if (!crumbs) return;
     const parts = ["Settings", ...state.path.map((p) => LABELS[p] || p)];
     crumbs.innerHTML = parts
       .map((label, i) => {
@@ -219,9 +389,9 @@
     });
   }
 
-
-    //  Reusable markup fragments
-    
+  /* ----------------------------------------------------------------
+     Reusable markup fragments
+  ---------------------------------------------------------------- */
   function switchHTML(key, checked, disabled) {
     return `<button type="button" class="ns-switch${checked ? " is-on" : ""}" data-ns-toggle="${key}" role="switch" aria-checked="${checked}"${disabled ? " disabled" : ""}></button>`;
   }
@@ -239,9 +409,9 @@
       </button>`;
   }
 
-  /* ----------------------------------------------------------------------
+  /* ----------------------------------------------------------------
      Page renderers — each returns an HTML string for #ns-content
-     -------------------------------------------------------------------- */
+  ---------------------------------------------------------------- */
   function pageHome() {
     return `
       <div class="ns-page-head">
@@ -554,7 +724,9 @@
 
   function pageAccounts() {
     const p = state.profile;
-    const avatarInner = p.avatar ? `<img src="${p.avatar}" alt="">` : (p.name[0] || "A").toUpperCase();
+    const avatarInner = p.avatar
+      ? `<img src="${escapeHTML(p.avatar)}" alt="">`
+      : (p.name[0] || "N").toUpperCase();
     return `
       <div class="ns-page-head"><h1>Accounts</h1><p class="ns-page-sub">Your Nexus profile and sign-in.</p></div>
 
@@ -580,7 +752,7 @@
 
       <div class="ns-card">
         <div class="ns-card-row">
-          <div class="ns-row-text"><strong>Password</strong><small>Last changed a while ago</small></div>
+          <div class="ns-row-text"><strong>Password</strong><small>Used to sign in to Nexus</small></div>
           <button type="button" class="ns-btn" data-ns-action="open-password">Change password</button>
         </div>
       </div>`;
@@ -658,11 +830,13 @@
       </div>`;
   }
 
-  
-    //  Content dispatcher
-    
+  /* ----------------------------------------------------------------
+     Content dispatcher
+  ---------------------------------------------------------------- */
   function renderContent() {
     const content = $("#ns-content");
+    if (!content) return;
+
     const key = state.path.join("/");
     const routes = {
       "": pageHome,
@@ -682,16 +856,21 @@
       "about": pageAbout,
     };
     const render = routes[key] || pageHome;
+
     // restart the fade-up animation on every navigation
     content.classList.remove("ns-content");
-    void content.offsetWidth; // reflow
+    void content.offsetWidth; // force reflow
     content.classList.add("ns-content");
     content.innerHTML = render();
 
     stopClock();
     if (key === "timelanguage") startClock();
+
     if (state.pendingHighlight) {
-      const target = key === "personalization" && state.pendingHighlight === "theme" ? $("#ns-theme-section") : null;
+      const target =
+        key === "personalization" && state.pendingHighlight === "theme"
+          ? $("#ns-theme-section")
+          : null;
       if (target) {
         target.classList.add("ns-flash");
         target.scrollIntoView({ block: "nearest" });
@@ -699,13 +878,15 @@
       state.pendingHighlight = null;
     }
   }
-  
-    //  Clock (Time & language page)
+
+  /* ----------------------------------------------------------------
+     Clock (Time & language page)
+  ---------------------------------------------------------------- */
   function tickClock() {
-    const now = new Date();
     const timeEl = $("#ns-clock");
     const dateEl = $("#ns-clock-date");
-    if (!timeEl) return;
+    if (!timeEl || !dateEl || !state) return;
+    const now = new Date();
     timeEl.textContent = new Intl.DateTimeFormat("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
@@ -717,31 +898,36 @@
     }).format(now);
   }
   function startClock() {
+    stopClock();
     tickClock();
-    state.clockTimer = setInterval(tickClock, 1000);
+    clockTimer = setInterval(tickClock, 1000);
   }
   function stopClock() {
-    if (state.clockTimer) {
-      clearInterval(state.clockTimer);
-      state.clockTimer = null;
+    if (clockTimer) {
+      clearInterval(clockTimer);
+      clockTimer = null;
     }
   }
 
-    //  Toast
-  let toastTimer = null;
+  /* ----------------------------------------------------------------
+     Toast
+  ---------------------------------------------------------------- */
   function showToast(message) {
     const toast = $("#ns-toast");
+    if (!toast) return;
     toast.textContent = message;
     toast.classList.add("is-visible");
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 2600);
   }
 
-    //  Toggle / slider / select / radio handling (all delegated on #ns-content)
+  /* ----------------------------------------------------------------
+     Toggle / slider / select / radio handling
+  ---------------------------------------------------------------- */
   function handleToggle(el) {
     const key = el.dataset.nsToggle;
 
-    // Bluetooth per-device switches are handled separately (not in state.toggles)
+    // Bluetooth per-device switches are not saved in state.toggles
     if (key.startsWith("bt-device-")) {
       const id = key.replace("bt-device-", "");
       const device = state.btDevices.find((d) => d.id === id);
@@ -785,20 +971,21 @@
     persist("ns-sliders", state.sliders);
 
     if (key === "brightness") {
-      $("#ns-brightness-output").textContent = value + "%";
+      const out = $("#ns-brightness-output");
+      if (out) out.textContent = value + "%";
       const dim = $("#ns-preview-dim");
       if (dim) dim.style.opacity = (100 - value) / 130;
     }
     if (key === "volume") {
-      $("#ns-volume-output").textContent = value + "%";
+      const out = $("#ns-volume-output");
+      if (out) out.textContent = value + "%";
       const wave = $("#ns-wave");
       if (wave) wave.classList.toggle("is-paused", value === 0);
     }
   }
 
-  function handleSelect(el) {
-    // Cosmetic in this demo — the selection itself is the deliverable;
-    // wiring to real OS behaviour happens where each app owns that state.
+  function handleSelect() {
+    // Cosmetic in this demo — wiring to real OS behaviour happens where each app owns that state.
   }
 
   function handleRadio(el) {
@@ -818,7 +1005,7 @@
 
       case "pick-wallpaper":
         state.wallpaper = el.dataset.w;
-        persist("ns-wallpaper", state.wallpaper); // → State Manager → its own Event System notification
+        persist("ns-wallpaper", state.wallpaper); // emits nexus:settings:changed
         renderContent();
         showToast("Wallpaper updated");
         break;
@@ -826,7 +1013,7 @@
       case "scan-device": {
         state.scanning = true;
         renderContent();
-        setTimeout(() => {
+        later(() => {
           state.scanning = false;
           const pool = [
             { name: "Nexus Mouse", type: "Input" },
@@ -836,7 +1023,12 @@
           const already = new Set(state.btDevices.map((d) => d.name));
           const next = pool.find((p) => !already.has(p.name));
           if (next) {
-            state.btDevices.push({ id: next.name.toLowerCase().replace(/\s+/g, "-"), name: next.name, type: next.type, connected: false });
+            state.btDevices.push({
+              id: next.name.toLowerCase().replace(/\s+/g, "-"),
+              name: next.name,
+              type: next.type,
+              connected: false,
+            });
             showToast("Found " + next.name + " nearby");
           } else {
             showToast("No new devices found nearby");
@@ -849,7 +1041,7 @@
       case "free-up-space": {
         el.disabled = true;
         el.textContent = "Cleaning…";
-        setTimeout(() => {
+        later(() => {
           state.storage.media = Math.max(4, state.storage.media - 8);
           persist("ns-storage", state.storage);
           renderContent();
@@ -861,11 +1053,11 @@
       case "check-update": {
         el.disabled = true;
         el.textContent = "Checking…";
-        const status = $("#ns-update-status");
-        setTimeout(() => {
-          status.textContent = "Installing Nexus 1.1…";
-          setTimeout(() => {
-            status.textContent = "Restart to finish installing";
+        later(() => {
+          const status = $("#ns-update-status");
+          if (status) status.textContent = "Installing Nexus 1.1…";
+          later(() => {
+            if (status) status.textContent = "Restart to finish installing";
             el.textContent = "Restart now";
             el.disabled = false;
           }, 1200);
@@ -876,7 +1068,7 @@
       case "clear-history":
         el.textContent = "Cleared ✓";
         el.disabled = true;
-        setTimeout(() => {
+        later(() => {
           el.textContent = "Clear";
           el.disabled = false;
         }, 1800);
@@ -888,17 +1080,17 @@
         break;
 
       case "avatar-trigger":
-        $("#ns-avatar-input").click();
+        $("#ns-avatar-input")?.click();
         break;
 
       case "save-profile": {
-        const name = $("#ns-name-input").value.trim() || "Alex";
-        const username = $("#ns-username-input").value.trim() || "alex@nexus";
+        const name = $("#ns-name-input").value.trim() || state.profile.name;
+        const username = $("#ns-username-input").value.trim() || state.profile.username;
         state.profile.name = name;
         state.profile.username = username;
-        updateCurrentUser({ name, username }); // identity → Auth Manager, not the settings bag
+        const saved = updateCurrentUser({ name, username });
         syncProfileUI();
-        showToast("Profile updated");
+        showToast(saved ? "Profile updated" : "Couldn't save your profile");
         break;
       }
 
@@ -917,57 +1109,66 @@
       case "pw-step2-next":
         passwordStep2Next();
         break;
-
-      case "minimize":
-        if (CoreWindow && typeof CoreWindow.minimize === "function") {
-          CoreWindow.minimize("settings");
-        } else {
-          emitEvent("window-minimize", { app: "settings" });
-        }
-        break;
-      case "maximize":
-        if (CoreWindow && typeof CoreWindow.maximize === "function") {
-          CoreWindow.maximize("settings");
-        } else {
-          APP.classList.toggle("is-maximized");
-        }
-        break;
-      case "close":
-        closeWindow();
-        break;
     }
   }
 
   function syncProfileUI() {
-    $("#ns-sidebar-name").textContent = state.profile.name;
-    const initial = (state.profile.name[0] || "A").toUpperCase();
-    const sidebarAvatar = $("#ns-sidebar-avatar");
-    const pageAvatar = $("#ns-page-avatar");
-    [sidebarAvatar, pageAvatar].forEach((node) => {
+    const nameEl = $("#ns-sidebar-name");
+    if (nameEl) nameEl.textContent = state.profile.name;
+    const initial = (state.profile.name[0] || "N").toUpperCase();
+    [$("#ns-sidebar-avatar"), $("#ns-page-avatar")].forEach((node) => {
       if (!node) return;
-      node.innerHTML = state.profile.avatar ? `<img src="${state.profile.avatar}" alt="">` : initial;
+      node.innerHTML = state.profile.avatar
+        ? `<img src="${escapeHTML(state.profile.avatar)}" alt="">`
+        : initial;
     });
   }
 
+  /* ----------------------------------------------------------------
+     Profile photo (shrunk to 256px so it fits comfortably in localStorage)
+  ---------------------------------------------------------------- */
+  function shrinkImage(dataUrl, size, done) {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, size / Math.max(img.width, img.height));
+      const canvas = document.createElement("canvas");
+      canvas.width = Math.max(1, Math.round(img.width * scale));
+      canvas.height = Math.max(1, Math.round(img.height * scale));
+      canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+      done(canvas.toDataURL("image/png"));
+    };
+    img.onerror = () => done(dataUrl);
+    img.src = dataUrl;
+  }
+
   function bindAvatarInput() {
-    $("#ns-avatar-input").addEventListener("change", (e) => {
+    const input = $("#ns-avatar-input");
+    if (!input) return;
+    input.addEventListener("change", (e) => {
       const file = e.target.files?.[0];
-      if (!file) return;
+      e.target.value = ""; // allow choosing the same file again later
+      if (!file || !file.type.startsWith("image/")) return;
+
       const reader = new FileReader();
       reader.onload = () => {
-        state.profile.avatar = reader.result;
-        updateCurrentUser({ avatar: state.profile.avatar }); // identity → Auth Manager
-        syncProfileUI();
-        showToast("Profile photo updated");
+        shrinkImage(reader.result, 256, (avatar) => {
+          if (!APP) return;
+          const saved = updateCurrentUser({ avatar });
+          if (saved) state.profile.avatar = avatar;
+          syncProfileUI();
+          showToast(saved ? "Profile photo updated" : "Couldn't save the photo");
+        });
       };
       reader.readAsDataURL(file);
     });
   }
 
-    //  Change-password dialog
-  
+  /* ----------------------------------------------------------------
+     Change-password dialog (checks and saves through the Auth Manager)
+  ---------------------------------------------------------------- */
   function openPasswordDialog() {
     const dialog = $("#ns-password-dialog");
+    if (!dialog) return;
     $("#ns-pw-current").value = "";
     $("#ns-pw-new").value = "";
     $("#ns-pw-confirm").value = "";
@@ -978,24 +1179,33 @@
     dialog.showModal();
   }
   function closePasswordDialog() {
-    $("#ns-password-dialog").close();
+    const dialog = $("#ns-password-dialog");
+    if (dialog && dialog.open) dialog.close();
   }
   function showPasswordStep(n) {
     $all(".ns-dialog-step").forEach((s) => s.classList.toggle("is-active", Number(s.dataset.nsStep) === n));
     $all("#ns-dialog-steps span").forEach((s) => s.classList.toggle("is-done", Number(s.dataset.step) <= n));
   }
   function passwordStep1Next() {
+    const user = CoreAuth.getUser();
     const current = $("#ns-pw-current").value;
-    if (current.length < 4) {
-      $("#ns-pw-error-1").textContent = "Enter your current password.";
+    const error = $("#ns-pw-error-1");
+
+    if (!current) {
+      error.textContent = "Enter your current password.";
       return;
     }
-    $("#ns-pw-error-1").textContent = "";
+    if (!user || current !== String(user.password || "")) {
+      error.textContent = "Incorrect password. Try again.";
+      return;
+    }
+    error.textContent = "";
     showPasswordStep(2);
   }
   function updateStrength(value) {
     const fill = $("#ns-pw-strength-fill");
     const label = $("#ns-pw-strength-label");
+    if (!fill || !label) return;
     let score = 0;
     if (value.length >= 6) score++;
     if (value.length >= 10) score++;
@@ -1014,19 +1224,31 @@
     label.textContent = value ? l.text : "Too short";
   }
   function passwordStep2Next() {
+    const user = CoreAuth.getUser();
     const val = $("#ns-pw-new").value;
     const confirm = $("#ns-pw-confirm").value;
+    const error = $("#ns-pw-error-2");
+
     if (val.length < 6) {
-      $("#ns-pw-error-2").textContent = "Use at least 6 characters.";
+      error.textContent = "Use at least 6 characters.";
       return;
     }
     if (val !== confirm) {
-      $("#ns-pw-error-2").textContent = "Passwords don't match.";
+      error.textContent = "Passwords don't match.";
       return;
     }
-    $("#ns-pw-error-2").textContent = "";
+    if (user && val === String(user.password || "")) {
+      error.textContent = "Choose a password you haven't used before.";
+      return;
+    }
+    if (!user || !CoreAuth.saveUser({ ...user, password: val })) {
+      error.textContent = "Couldn't save the new password. Try again.";
+      return;
+    }
+    error.textContent = "";
     showPasswordStep(3);
     animateCheckmark();
+    emitEvent("profile:changed", { password: true });
   }
   function animateCheckmark() {
     const path = $("#ns-check-path");
@@ -1040,70 +1262,38 @@
     );
   }
 
-  function closeWindow() {
-    if (CoreWindow && typeof CoreWindow.close === "function") {
-      CoreWindow.close("settings");
-      return;
-    }
-    // No Window Manager wired in yet — fall back to handling it ourselves
-    const anim = APP.animate(
-      [
-        { transform: "translate(0, 0) scale(1)", opacity: 1 },
-        { transform: "translate(46%, -46%) scale(0.06)", opacity: 0 },
-      ],
-      { duration: 420, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" }
-    );
-    anim.onfinish = () => {
-      APP.style.display = "none";
-      $("#ns-reopen-pill").hidden = false;
-      emitEvent("window-close", { app: "settings" });
-    };
-  }
-
-  function reopenWindow() {
-    if (CoreWindow && typeof CoreWindow.open === "function") {
-      CoreWindow.open("settings");
-      return;
-    }
-    APP.style.display = "";
-    $("#ns-reopen-pill").hidden = true;
-    APP.animate(
-      [
-        { transform: "translate(46%, -46%) scale(0.06)", opacity: 0 },
-        { transform: "translate(0, 0) scale(1)", opacity: 1 },
-      ],
-      { duration: 380, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
-    );
-  }
-
-  
-    //  Search (sidebar "Find a setting")
+  /* ----------------------------------------------------------------
+     Search (sidebar "Find a setting")
+  ---------------------------------------------------------------- */
   function bindSearch() {
-    $("#ns-search-input").addEventListener("input", (e) => {
+    const input = $("#ns-search-input");
+    if (!input) return;
+    input.addEventListener("input", (e) => {
       const q = e.target.value.trim().toLowerCase();
       $all(".ns-nav-item").forEach((item) => {
         const label = item.dataset.nsLabel || "";
         const match = !q || label.toLowerCase().includes(q);
         item.hidden = !match;
         const labelSpan = item.querySelector(".ns-nav-label");
-        labelSpan.innerHTML = q && match
-          ? escapeHTML(label).replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig"), "<mark>$1</mark>")
-          : escapeHTML(label);
+        labelSpan.innerHTML =
+          q && match
+            ? escapeHTML(label).replace(
+                new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig"),
+                "<mark>$1</mark>"
+              )
+            : escapeHTML(label);
       });
     });
   }
 
-  
-    //  Event delegation — set up once, survives every innerHTML re-render
-    
+  /* ----------------------------------------------------------------
+     Event delegation — set up once per mount, survives every re-render
+     (listeners live on elements inside the window, so they are removed
+     automatically when the core removes the window)
+  ---------------------------------------------------------------- */
   function bindDelegatedEvents() {
     const content = $("#ns-content");
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && $("#ns-password-dialog").open) closePasswordDialog();
-    });
-
-    // Sidebar + crumbs use data-ns-go / data-ns-crumb, content uses data-ns-go too
     APP.addEventListener("click", (e) => {
       const goEl = e.target.closest("[data-ns-go]");
       if (goEl) {
@@ -1145,45 +1335,70 @@
     $("#ns-password-dialog").addEventListener("input", (e) => {
       if (e.target.id === "ns-pw-new") updateStrength(e.target.value);
     });
-
-    $("#ns-reopen-pill").addEventListener("click", reopenWindow);
   }
 
-    //  Init
-    
-  let initialized = false;
-  function init() {
-    if (initialized) return;
-    initialized = true;
+  /* ----------------------------------------------------------------
+     Mount / unmount — called from core window events
+  ---------------------------------------------------------------- */
+  function mount(root) {
+    if (!root) return;
 
-    applyTheme(state.theme);
-    applyAccent(state.accent);
+    mountId++;
+    stopClock();
+
+    APP = root;
+    state = createState();
+
+    applyTheme(state.theme, true);
+    applyAccent(state.accent, true);
     syncProfileUI();
     bindDelegatedEvents();
     bindSearch();
     bindAvatarInput();
     navigate([]);
-
-    // Register with App Manager so it (not this file) owns app lifecycle.
-    // GUESSED signature — confirm the real one with whoever owns Core.
-    if (CoreApp && typeof CoreApp.register === "function") {
-      CoreApp.register({
-        id: "settings",
-        name: "Settings",
-        icon: "⚙",
-        open: reopenWindow,
-        close: closeWindow,
-      });
-    }
   }
 
-  if (document.readyState !== "loading") init();
-  else document.addEventListener("DOMContentLoaded", init);
+  function unmount() {
+    mountId++;
+    stopClock();
+    clearTimeout(toastTimer);
+    APP = null;
+    state = null;
+  }
 
-  // Small public surface, in case the window manager needs to reach in
+  /* ----------------------------------------------------------------
+     Hook into the core
+  ---------------------------------------------------------------- */
+
+  // Replaces the core's placeholder "settings" app (same id).
+  CoreApp.registerApplication({
+    id: APP_ID,
+    title: "Settings",
+    width: 1000,
+    height: 640,
+    content: () => SETTINGS_HTML,
+  });
+
+  // Window Manager emits nexus:window:created after the window is in the DOM.
+  document.addEventListener("nexus:window:created", (event) => {
+    const win = event.detail;
+    if (!win || win.appId !== APP_ID) return;
+    mount(win.element.querySelector("#nexus-settings-app"));
+  });
+
+  document.addEventListener("nexus:window:closed", (event) => {
+    const win = event.detail;
+    if (win && win.appId === APP_ID) unmount();
+  });
+
+  // Small public surface for other modules
   window.NexusSettings = {
-    open: reopenWindow,
-    close: closeWindow,
-    navigate,
+    open() {
+      window.Nexus?.openApplication(APP_ID);
+    },
+    navigate(path) {
+      if (!APP) return;
+      navigate(Array.isArray(path) ? path : String(path).split("/"));
+    },
   };
 })();

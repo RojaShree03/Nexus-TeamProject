@@ -2,1472 +2,754 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Nexus OS</title>
-
-    <link rel="stylesheet" href="./css/core.css">
-    <link rel="stylesheet" href="./css/settings.css">
-    <link rel="stylesheet" href="./css/notepad.css">
-    <link rel="stylesheet" href="./css/terminal.css">
-    <link rel="stylesheet" href="./css/calculator.css">
-    <link rel="stylesheet" href="./css/task-manager.css">
-
+    <title>Nexus Web OS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        nexus: {
+                            900: '#0b0f19',
+                            800: '#111827',
+                            700: '#1e293b',
+                            600: '#334155',
+                            accent: '#3b82f6',
+                            accentHover: '#2563eb',
+                            glow: 'rgba(59, 130, 246, 0.4)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
-
-<body>
-
-
-    <!-- ============================================================
-     NEXUS ROOT
-============================================================ -->
-
-    <div id="nexus">
-
-
-        <!-- ========================================================
-         SVG ICON SYSTEM
-         All icons are local and require no external library.
-    ========================================================= -->
-
-        <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-
-            <defs>
-
-
-                <!-- FILES -->
-
-                <symbol id="icon-files" viewBox="0 0 24 24">
-
-                    <path
-                        d="M3.5 6.5A2.5 2.5 0 0 1 6 4h4l2 2h6.5A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-12A2.5 2.5 0 0 1 4 17.5z"
-                        fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
-
-                    <path d="M4 9h17" fill="none" stroke="currentColor" stroke-width="1.7" />
-
-                </symbol>
-
-
-                <!-- PROJECTS -->
-
-                <symbol id="icon-projects" viewBox="0 0 24 24">
-
-                    <path d="m8 8-4 4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" />
-
-                    <path d="m16 8 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" />
-
-                    <path d="m14 5-4 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- NOTES -->
-
-                <symbol id="icon-notes" viewBox="0 0 24 24">
-
-                    <path d="M6 3.5h9l4 4V20H6z" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linejoin="round" />
-
-                    <path d="M14.5 3.5V8H19" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linejoin="round" />
-
-                    <path d="M9 12h6M9 15h6M9 18h4" fill="none" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- BROWSER -->
-
-                <symbol id="icon-browser" viewBox="0 0 24 24">
-
-                    <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
-
-                    <path d="M3.8 9h16.4M3.8 15h16.4" fill="none" stroke="currentColor" stroke-width="1.4" />
-
-                    <path d="M12 3.5c2.2 2.3 3.3 5.1 3.3 8.5s-1.1 6.2-3.3 8.5c-2.2-2.3-3.3-5.1-3.3-8.5S9.8 5.8 12 3.5Z"
-                        fill="none" stroke="currentColor" stroke-width="1.4" />
-
-                </symbol>
-
-
-                <!-- SETTINGS -->
-
-                <symbol id="icon-settings" viewBox="0 0 24 24">
-
-                    <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" fill="none" stroke="currentColor"
-                        stroke-width="1.6" />
-
-                    <path
-                        d="M19.2 13.4a7.8 7.8 0 0 0 0-2.8l1.5-1.2-1.8-3.1-1.8.7a8 8 0 0 0-2.4-1.4L14.5 4h-3.6l-.3 1.6a8 8 0 0 0-2.4 1.4l-1.8-.7-1.8 3.1 1.5 1.2a7.8 7.8 0 0 0 0 2.8l-1.5 1.2 1.8 3.1 1.8-.7a8 8 0 0 0 2.4 1.4l.3 1.6h3.6l.3-1.6a8 8 0 0 0 2.4-1.4l1.8.7 1.8-3.1z"
-                        fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
-
-                </symbol>
-
-
-                <!-- TERMINAL -->
-
-                <symbol id="icon-terminal" viewBox="0 0 24 24">
-
-                    <rect x="3.5" y="4.5" width="17" height="15" rx="2.5" fill="none" stroke="currentColor"
-                        stroke-width="1.6" />
-
-                    <path d="m7 9 3 2.5L7 14" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" stroke-linejoin="round" />
-
-                    <path d="M12.5 14H17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- TRASH -->
-
-                <symbol id="icon-trash" viewBox="0 0 24 24">
-
-                    <path d="M5 7h14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
-
-                    <path d="M9 7V4.5h6V7" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linejoin="round" />
-
-                    <path d="M7 7.5 8 20h8l1-12.5" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linejoin="round" />
-
-                    <path d="M10 11v5M14 11v5" fill="none" stroke="currentColor" stroke-width="1.4"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- SEARCH -->
-
-                <symbol id="icon-search" viewBox="0 0 24 24">
-
-                    <circle cx="10.8" cy="10.8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.7" />
-
-                    <path d="m16 16 4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- WIFI -->
-
-                <symbol id="icon-wifi" viewBox="0 0 24 24">
-
-                    <path d="M3.5 8.8a13.5 13.5 0 0 1 17 0" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" />
-
-                    <path d="M6.8 12a8.3 8.3 0 0 1 10.4 0" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" />
-
-                    <path d="M10 15.2a3.5 3.5 0 0 1 4 0" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" />
-
-                    <circle cx="12" cy="19" r="1" fill="currentColor" />
-
-                </symbol>
-
-
-                <!-- SOUND -->
-
-                <symbol id="icon-sound" viewBox="0 0 24 24">
-
-                    <path d="M5 10h3l4-3.5v11L8 14H5z" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linejoin="round" />
-
-                    <path d="M15.5 9a4.5 4.5 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" />
-
-                    <path d="M18 6.8a7.5 7.5 0 0 1 0 10.4" fill="none" stroke="currentColor" stroke-width="1.5"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- BATTERY -->
-
-                <symbol id="icon-battery" viewBox="0 0 24 24">
-
-                    <rect x="4" y="7" width="15" height="10" rx="2" fill="none" stroke="currentColor"
-                        stroke-width="1.5" />
-
-                    <path d="M20 10v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-
-                    <path d="M6.5 9.5h8v5h-8z" fill="currentColor" />
-
-                </symbol>
-
-
-                <!-- PROFILE -->
-
-                <symbol id="icon-profile" viewBox="0 0 24 24">
-
-                    <circle cx="12" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.6" />
-
-                    <path d="M5.5 20a6.5 6.5 0 0 1 13 0" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- LOCK -->
-
-                <symbol id="icon-lock" viewBox="0 0 24 24">
-
-                    <rect x="5" y="10" width="14" height="10" rx="2" fill="none" stroke="currentColor"
-                        stroke-width="1.6" />
-
-                    <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- INFO -->
-
-                <symbol id="icon-info" viewBox="0 0 24 24">
-
-                    <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.6" />
-
-                    <path d="M12 10.5v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-
-                    <circle cx="12" cy="7.5" r="1" fill="currentColor" />
-
-                </symbol>
-
-
-                <!-- DOWNLOAD -->
-
-                <symbol id="icon-download" viewBox="0 0 24 24">
-
-                    <path d="M12 4v11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-
-                    <path d="m7.5 11 4.5 4.5 4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" stroke-linejoin="round" />
-
-                    <path d="M5 20h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- HOME -->
-
-                <symbol id="icon-home" viewBox="0 0 24 24">
-
-                    <path d="m4 11 8-7 8 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
-                        stroke-linejoin="round" />
-
-                    <path d="M6.5 10v9h11v-9" fill="none" stroke="currentColor" stroke-width="1.6"
-                        stroke-linejoin="round" />
-
-                </symbol>
-
-
-                <!-- MENU -->
-
-                <symbol id="icon-menu" viewBox="0 0 24 24">
-
-                    <path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- CLOSE -->
-
-                <symbol id="icon-close" viewBox="0 0 24 24">
-
-                    <path d="m7 7 10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" />
-
-                </symbol>
-
-
-                <!-- CHEVRON -->
-
-                <symbol id="icon-chevron" viewBox="0 0 24 24">
-
-                    <path d="m9 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"
-                        stroke-linejoin="round" />
-
-                </symbol>
-
-
-                <!-- CALCULATOR -->
-
-                <symbol id="icon-calculator" viewBox="0 0 24 24">
-
-                    <rect x="4" y="2.5" width="16" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="1.6" />
-
-                    <rect x="7" y="5.5" width="10" height="3.5" rx="1" fill="none" stroke="currentColor" stroke-width="1.3" />
-
-                    <circle cx="8" cy="12.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="12" cy="12.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="16" cy="12.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="8" cy="15.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="12" cy="15.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="16" cy="15.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="8" cy="18.5" r="1.1" fill="currentColor" />
-
-                    <circle cx="12" cy="18.5" r="1.1" fill="currentColor" />
-
-                    <rect x="15" y="17.5" width="2" height="2" rx="0.5" fill="currentColor" />
-
-                </symbol>
-
-
-                <!-- TASK MANAGER -->
-
-                <symbol id="icon-tasks" viewBox="0 0 24 24">
-
-                    <rect x="3" y="4" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6" />
-
-                    <path d="M7 14.5l3-4 3 2.5 4-5.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-
-                    <circle cx="17" cy="7.5" r="1" fill="currentColor" />
-
-                    <line x1="3" y1="17" x2="21" y2="17" stroke="currentColor" stroke-width="1.2" />
-
-                </symbol>
-
-
-            </defs>
-
-        </svg>
-
-
-
-        <!-- ========================================================
-         BOOT SCREEN
-    ========================================================= -->
-
-        <section id="boot-screen" class="screen active">
-
-            <div class="boot-content">
-
-
-                <div class="nexus-logo">
-
-                    <img src="./assets/logo/N-logo.png" alt="Nexus">
-
-                </div>
-
-
-                <h1>Nexus</h1>
-
-
-                <p>
-                    Your space. Your flow.
-                </p>
-
-
-                <p id="boot-status" class="boot-status">
-                    Initializing system
-                </p>
-
-
-                <div class="boot-loader">
-
-                    <div id="boot-progress" class="boot-progress"></div>
-
-                </div>
-
-
-                <div id="boot-percentage" class="boot-percentage">
-                    0%
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ========================================================
-         SETUP SCREEN
-    ========================================================= -->
-
-        <section id="setup-screen" class="screen auth-screen">
-
-            <div class="auth-container">
-
-
-                <div class="auth-brand">
-
-                    <div class="auth-brand-mark">
-
-                        <img src="./assets/logo/N-logo.png" alt="Nexus">
-
-                    </div>
-
-                    <span>Nexus</span>
-
-                </div>
-
-
-                <div class="auth-header">
-
-                    <h2>Create your space</h2>
-
-                    <p>
-                        Set up your Nexus profile.
-                    </p>
-
-                </div>
-
-
-                <div class="profile-upload">
-
-                    <div id="setup-avatar" class="avatar">
-                        N
-                    </div>
-
-
-                    <button type="button" id="change-avatar-btn" class="avatar-button">
-                        Choose profile photo
-                    </button>
-
-
-                    <input type="file" id="avatar-input" accept="image/*" hidden>
-
-                </div>
-
-
-                <form id="setup-form" class="auth-form">
-
-
-                    <div class="input-group">
-
-                        <label for="setup-name">
-                            Your name
-                        </label>
-
-                        <input type="text" id="setup-name" placeholder="Enter your name" autocomplete="name">
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label for="setup-password">
-                            Password
-                        </label>
-
-                        <input type="password" id="setup-password" placeholder="Create a password"
-                            autocomplete="new-password">
-
-                    </div>
-
-
-                    <div class="input-group">
-
-                        <label for="setup-confirm-password">
-                            Confirm password
-                        </label>
-
-                        <input type="password" id="setup-confirm-password" placeholder="Confirm your password"
-                            autocomplete="new-password">
-
-                    </div>
-
-
-                    <p id="setup-error" class="auth-error"></p>
-
-
-                    <button type="submit" class="auth-primary-button">
-
-                        <span>
-                            Create Profile
-                        </span>
-
-                        <span>→</span>
-
-                    </button>
-
-
-                </form>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ========================================================
-         LOGIN SCREEN
-    ========================================================= -->
-
-        <section id="login-screen" class="screen auth-screen">
-
-            <div class="auth-container">
-
-
-                <div class="auth-brand">
-
-                    <div class="auth-brand-mark">
-
-                        <img src="./assets/logo/N-logo.png" alt="Nexus">
-
-                    </div>
-
-                    <span>Nexus</span>
-
-                </div>
-
-
-                <div class="auth-header">
-
-                    <h2>Welcome back</h2>
-
-                    <p>
-                        Good to see you again.
-                    </p>
-
-                </div>
-
-
-                <div class="login-profile">
-
-                    <div id="login-avatar" class="avatar">
-                        N
-                    </div>
-
-
-                    <h3 id="login-name">
-                        User
-                    </h3>
-
-                </div>
-
-
-                <form id="login-form" class="auth-form">
-
-
-                    <div class="input-group">
-
-                        <label for="login-password">
-                            Password
-                        </label>
-
-                        <input type="password" id="login-password" placeholder="Enter your password"
-                            autocomplete="current-password">
-
-                    </div>
-
-
-                    <p id="login-error" class="auth-error"></p>
-
-
-                    <button type="submit" class="auth-primary-button">
-
-                        <span>
-                            Unlock
-                        </span>
-
-                        <span>→</span>
-
-                    </button>
-
-
-                </form>
-
-
-                <button type="button" id="forgot-password" class="text-button">
-                    Forgot your password?
+<body class="bg-nexus-900 text-slate-100 font-sans h-screen overflow-hidden select-none">
+
+    <!-- Desktop Background Wallpaper -->
+    <div id="desktop-bg" class="absolute inset-0 bg-cover bg-center transition-all duration-700"
+        style="background-image: radial-gradient(circle at 50% 30%, #1e293b 0%, #0b0f19 80%);">
+        <!-- Ambient background glows -->
+        <div class="absolute top-1/4 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none">
+        </div>
+    </div>
+
+    <!-- Top Navigation / Status Bar -->
+    <header
+        class="relative z-40 h-8 bg-slate-900/60 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-3 sm:px-4 text-xs font-medium">
+        <div class="flex items-center space-x-3 sm:space-x-4">
+            <button id="start-btn"
+                class="flex items-center space-x-2 text-blue-400 hover:text-blue-300 font-bold transition">
+                <i class="fa-solid fa-square-n text-lg"></i>
+                <span class="tracking-wide">NEXUS OS</span>
+            </button>
+            <div class="hidden md:flex items-center gap-0.5 text-slate-300">
+                <span class="text-slate-700 mx-2">|</span>
+                <button onclick="openApp('file-manager')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-folder-open text-blue-400"></i> Files
                 </button>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- ========================================================
-         DESKTOP
-    ========================================================= -->
-
-        <section id="desktop" class="screen desktop-screen">
-
-
-            <!-- ====================================================
-             TOP BAR
-        ================================================== -->
-
-            <header class="nexus-topbar">
-
-
-                <!-- LEFT -->
-
-                <div class="topbar-left">
-
-
-                    <button type="button" class="nexus-brand" id="nexus-brand" title="Nexus">
-
-                        <img src="./assets/logo/N-logo.png" alt="Nexus" class="topbar-logo">
-
-                        <span>NEXUS</span>
-
-                    </button>
-
-
-                    <button type="button" class="topbar-menu" data-menu="file">
-                        File
-                    </button>
-
-
-                    <button type="button" class="topbar-menu" data-menu="edit">
-                        Edit
-                    </button>
-
-
-                    <button type="button" class="topbar-menu" data-menu="view">
-                        View
-                    </button>
-
-
-                    <button type="button" class="topbar-menu" data-menu="window">
-                        Window
-                    </button>
-
-
-                    <button type="button" class="topbar-menu" data-menu="help">
-                        Help
-                    </button>
-
-
-                </div>
-
-
-
-                <!-- CENTER SEARCH -->
-
-                <div class="topbar-search">
-
-
-                    <svg width="16" height="16" class="search-svg" aria-hidden="true">
-
-                        <use href="#icon-search"></use>
-
-                    </svg>
-
-
-                    <input type="search" id="desktop-search" placeholder="Search anything..." autocomplete="off">
-
-
-                    <span class="search-shortcut">
-                        /
-                    </span>
-
-
-                </div>
-
-
-
-                <!-- RIGHT -->
-
-                <div class="topbar-right">
-
-
-                    <span class="system-indicator" title="System ready">
-                        ●
-                    </span>
-
-
-                    <svg width="16" height="16" class="system-icon" aria-hidden="true">
-
-                        <use href="#icon-wifi"></use>
-
-                    </svg>
-
-
-                    <svg width="16" height="16" class="system-icon" aria-hidden="true">
-
-                        <use href="#icon-sound"></use>
-
-                    </svg>
-
-
-                    <svg width="16" height="16" class="system-icon" aria-hidden="true">
-
-                        <use href="#icon-battery"></use>
-
-                    </svg>
-
-
-                    <span id="desktop-time" class="desktop-clock">
-                        12:00 PM
-                    </span>
-
-
-                    <button type="button" id="desktop-profile-button" class="desktop-profile-button" title="Profile">
-
-                        <div id="desktop-avatar" class="desktop-mini-avatar">
-                            N
-                        </div>
-
-                    </button>
-
-
-                </div>
-
-
-            </header>
-
-
-
-            <!-- ====================================================
-             DESKTOP WORKSPACE
-        ================================================== -->
-
-            <main class="nexus-desktop-area">
-
-
-                <!-- =================================================
-                 DESKTOP ICONS
-            ================================================= -->
-
-                <aside class="desktop-icon-column">
-
-
-                    <!-- FILES -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="files" title="Files">
-
-                        <span class="desktop-app-icon files-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-files"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Files
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- PROJECTS -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="projects" title="Projects">
-
-                        <span class="desktop-app-icon projects-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-projects"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Projects
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- NOTEPAD -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="notes" title="Notepad">
-
-                        <span class="desktop-app-icon notes-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-notes"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Notepad
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- TERMINAL -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="terminal" title="Terminal">
-
-                        <span class="desktop-app-icon terminal-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-terminal"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Terminal
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- CALCULATOR -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="calculator" title="Calculator">
-
-                        <span class="desktop-app-icon calculator-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-calculator"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Calculator
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- TASK MANAGER -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="taskmanager" title="Task Manager">
-
-                        <span class="desktop-app-icon taskmanager-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-tasks"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Tasks
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- TRASH -->
-
-                    <button type="button" class="nexus-desktop-icon" data-app="trash" title="Trash">
-
-                        <span class="desktop-app-icon trash-icon">
-
-                            <svg width="28" height="28" aria-hidden="true">
-
-                                <use href="#icon-trash"></use>
-
-                            </svg>
-
-                        </span>
-
-
-                        <span class="desktop-app-name">
-                            Trash
-                        </span>
-
-                    </button>
-
-
-                </aside>
-
-
-
-                <!-- =================================================
-                 CENTER
-            ================================================= -->
-
-                <section class="desktop-center">
-
-
-                    <p id="desktop-greeting-time" class="desktop-greeting-time">
-                        Good Morning,
-                    </p>
-
-
-                    <h1 id="desktop-greeting" class="desktop-user-name">
-                        User
-                    </h1>
-
-
-                    <p class="desktop-message">
-                        Small steps. Big progress.
-                    </p>
-
-
-                </section>
-
-
-
-                <!-- =================================================
-                 DESKTOP NAVIGATION
-            ================================================= -->
-
-                <button type="button" id="desktop-navigation" class="desktop-navigation" title="Navigate">
-
-                    <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-
-                        <path d="m15 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.7"
-                            stroke-linecap="round" stroke-linejoin="round" />
-
-                    </svg>
-
+                <button onclick="openApp('notepad')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-file-lines text-emerald-400"></i> Notepad
                 </button>
-
-
-
-                <!-- =================================================
-                 WINDOW LAYER
-                 Window Manager will use this.
-            ================================================= -->
-
-                <div id="window-layer" class="window-layer"></div>
-
-
-
-                <!-- =================================================
-                 DOCK
-            ================================================= -->
-
-                <nav class="nexus-dock" aria-label="Nexus Dock">
-
-
-                    <!-- NEXUS -->
-
-                    <button type="button" class="dock-item active" data-app="launcher" title="Application Launcher">
-
-                        <span class="dock-app-icon nexus-dock-logo">
-
-                            <img src="./assets/logo/N-logo.png" alt="Nexus">
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- FILES -->
-
-                    <button type="button" class="dock-item" data-app="files" title="Files">
-
-                        <span class="dock-app-icon files-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-files"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- PROJECTS -->
-
-                    <button type="button" class="dock-item" data-app="projects" title="Projects">
-
-                        <span class="dock-app-icon projects-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-projects"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- BROWSER -->
-
-                    <button type="button" class="dock-item" data-app="browser" title="Browser">
-
-                        <span class="dock-app-icon browser-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-browser"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- NOTEPAD -->
-
-                    <button type="button" class="dock-item" data-app="notes" title="Notepad">
-
-                        <span class="dock-app-icon notes-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-notes"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- SETTINGS -->
-
-                    <button type="button" class="dock-item" data-app="settings" title="Settings">
-
-                        <span class="dock-app-icon settings-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-settings"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- TERMINAL -->
-
-                    <button type="button" class="dock-item" data-app="terminal" title="Terminal">
-
-                        <span class="dock-app-icon terminal-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-terminal"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                    <!-- CALCULATOR -->
-
-                    <button type="button" class="dock-item" data-app="calculator" title="Calculator">
-
-                        <span class="dock-app-icon calculator-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-calculator"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- TASK MANAGER -->
-
-                    <button type="button" class="dock-item" data-app="taskmanager" title="Task Manager">
-
-                        <span class="dock-app-icon taskmanager-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-tasks"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-
-                    <!-- SEPARATOR -->
-
-                    <span class="dock-separator"></span>
-
-
-                    <!-- TRASH -->
-
-                    <button type="button" class="dock-item" data-app="trash" title="Trash">
-
-                        <span class="dock-app-icon trash-icon">
-
-                            <svg width="27" height="27" aria-hidden="true">
-
-                                <use href="#icon-trash"></use>
-
-                            </svg>
-
-                        </span>
-
-                    </button>
-
-
-                </nav>
-
-
-            </main>
-
-
-
-            <!-- ====================================================
-             APPLICATION LAUNCHER
-        ================================================== -->
-
-            <div id="application-launcher" class="application-launcher" aria-hidden="true">
-
-
-                <div class="launcher-container">
-
-
-                    <div class="launcher-header">
-
-
-                        <div>
-
-                            <p class="launcher-label">
-                                NEXUS
-                            </p>
-
-                            <h2>
-                                Applications
-                            </h2>
-
-                        </div>
-
-
-                        <button type="button" id="launcher-close" class="launcher-close" title="Close">
-
-                            <svg width="18" height="18" aria-hidden="true">
-
-                                <use href="#icon-close"></use>
-
-                            </svg>
-
-                        </button>
-
-
-                    </div>
-
-
-
-                    <!-- SEARCH -->
-
-                    <div class="launcher-search">
-
-                        <svg width="17" height="17" aria-hidden="true">
-
-                            <use href="#icon-search"></use>
-
-                        </svg>
-
-
-                        <input type="search" id="launcher-search-input" placeholder="Search applications..."
-                            autocomplete="off">
-
-
-                        <span class="search-shortcut">
-                            /
-                        </span>
-
-
-                    </div>
-
-
-
-                    <!-- APPLICATION GRID -->
-
-                    <div class="launcher-grid">
-
-
-                        <!-- FILES -->
-
-                        <button type="button" class="launcher-app" data-app="files">
-
-                            <span class="launcher-app-icon files-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-files"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Files
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- PROJECTS -->
-
-                        <button type="button" class="launcher-app" data-app="projects">
-
-                            <span class="launcher-app-icon projects-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-projects"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Projects
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- NOTEPAD -->
-
-                        <button type="button" class="launcher-app" data-app="notes">
-
-                            <span class="launcher-app-icon notes-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-notes"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Notepad
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- BROWSER -->
-
-                        <button type="button" class="launcher-app" data-app="browser">
-
-                            <span class="launcher-app-icon browser-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-browser"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Browser
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- SETTINGS -->
-
-                        <button type="button" class="launcher-app" data-app="settings">
-
-                            <span class="launcher-app-icon settings-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-settings"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Settings
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- TERMINAL -->
-
-                        <button type="button" class="launcher-app" data-app="terminal">
-
-                            <span class="launcher-app-icon terminal-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-terminal"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Terminal
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- CALCULATOR -->
-
-                        <button type="button" class="launcher-app" data-app="calculator">
-
-                            <span class="launcher-app-icon calculator-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-calculator"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Calculator
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- TASK MANAGER -->
-
-                        <button type="button" class="launcher-app" data-app="taskmanager">
-
-                            <span class="launcher-app-icon taskmanager-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-tasks"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Task Manager
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- TRASH -->
-
-                        <button type="button" class="launcher-app" data-app="trash">
-
-                            <span class="launcher-app-icon trash-icon">
-
-                                <svg width="29" height="29" aria-hidden="true">
-
-                                    <use href="#icon-trash"></use>
-
-                                </svg>
-
-                            </span>
-
-                            <span>
-                                Trash
-                            </span>
-
-                        </button>
-
-
-
-                        <!-- ABOUT -->
-
-                        <button type="button" class="launcher-app" data-app="about">
-
-                            <span class="launcher-app-icon nexus-dock-logo">
-
-                                <img src="./assets/logo/N-logo.png" alt="Nexus">
-
-                            </span>
-
-                            <span>
-                                About Nexus
-                            </span>
-
-                        </button>
-
-
-                    </div>
-
-
-                </div>
-
-
+                <button onclick="openApp('calculator')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-calculator text-amber-400"></i> Calc
+                </button>
+                <button onclick="openApp('terminal')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-terminal text-violet-400"></i> Terminal
+                </button>
+                <button onclick="openApp('task-manager')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-slate-700/60 text-slate-300 hover:text-white text-xs transition font-medium">
+                    <i class="fa-solid fa-chart-pie text-rose-400"></i> Tasks
+                </button>
             </div>
+        </div>
+        <div class="flex items-center space-x-3 sm:space-x-4 text-slate-400">
+            <span id="system-status" class="flex items-center gap-1.5 text-emerald-400 text-[11px]">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="hidden sm:inline">Online</span>
+            </span>
+            <i class="fa-solid fa-wifi hover:text-white cursor-pointer"></i>
+            <i class="fa-solid fa-volume-high hover:text-white cursor-pointer"></i>
+            <i class="fa-solid fa-battery-full hover:text-white cursor-pointer"></i>
+            <span id="top-clock" class="text-slate-200 font-mono text-[11px] sm:text-xs">11:42 AM</span>
+        </div>
+    </header>
 
+    <!-- Desktop Icons Area -->
+    <main id="desktop"
+        class="relative z-10 h-[calc(100vh-5rem)] p-3 sm:p-6 grid grid-flow-col grid-rows-5 sm:grid-rows-6 gap-3 sm:gap-6 justify-start content-start">
+        <!-- Desktop Shortcuts -->
+        <div class="desktop-icon group" onclick="openApp('file-manager')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-blue-600/30 border border-slate-700 group-hover:border-blue-500/50 rounded-2xl flex items-center justify-center text-blue-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-blue-300">Files</span>
+        </div>
 
-        </section>
+        <div class="desktop-icon group" onclick="openApp('notepad')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-emerald-600/30 border border-slate-700 group-hover:border-emerald-500/50 rounded-2xl flex items-center justify-center text-emerald-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-file-lines"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-emerald-300">Notes</span>
+        </div>
 
+        <div class="desktop-icon group" onclick="openApp('calculator')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-amber-600/30 border border-slate-700 group-hover:border-amber-500/50 rounded-2xl flex items-center justify-center text-amber-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-calculator"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-amber-300">Calculator</span>
+        </div>
 
+        <div class="desktop-icon group" onclick="openApp('terminal')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-violet-600/30 border border-slate-700 group-hover:border-violet-500/50 rounded-2xl flex items-center justify-center text-violet-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-terminal"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-violet-300">Terminal</span>
+        </div>
+
+        <div class="desktop-icon group" id="desktop-trash-icon" onclick="openApp('trash')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-slate-600/30 border border-slate-700 group-hover:border-slate-500/50 rounded-2xl flex items-center justify-center text-slate-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i id="desktop-trash-icon-i" class="fa-solid fa-trash-can"></i>
+            </div>
+            <span
+                class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-slate-300">Trash</span>
+        </div>
+
+        <div class="desktop-icon group" onclick="openApp('task-manager')">
+            <div
+                class="w-12 h-12 sm:w-14 sm:h-14 bg-slate-800/80 group-hover:bg-rose-600/30 border border-slate-700 group-hover:border-rose-500/50 rounded-2xl flex items-center justify-center text-rose-400 text-xl sm:text-2xl shadow-lg backdrop-blur-md transition-all duration-200 transform group-hover:scale-105">
+                <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <span class="text-[11px] sm:text-xs font-medium text-slate-200 drop-shadow group-hover:text-rose-300">Task
+                Manager</span>
+        </div>
+    </main>
+
+    <!-- WINDOW CONTAINERS -->
+
+    <!-- 1. FILE MANAGER WINDOW -->
+    <div id="win-file-manager"
+        class="app-window hidden absolute top-12 left-4 md:left-20 w-[96vw] md:w-[820px] max-w-[96vw] md:max-w-[820px] h-[82vh] md:h-[520px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Window Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-folder-open text-blue-400"></i>
+                <span>File Manager</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('file-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('file-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('file-manager')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Window Toolbar -->
+        <div
+            class="min-h-12 py-1.5 bg-slate-800/40 border-b border-slate-800 px-3 sm:px-4 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+            <div class="flex items-center space-x-1.5 sm:space-x-2">
+                <button onclick="fmNavigateUp()" class="p-1.5 rounded hover:bg-slate-700 text-slate-300"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <button onclick="fmRefresh()" class="p-1.5 rounded hover:bg-slate-700 text-slate-300"><i
+                        class="fa-solid fa-rotate-right"></i></button>
+                <!-- Breadcrumbs -->
+                <div id="fm-breadcrumbs"
+                    class="flex items-center space-x-1 bg-slate-950/50 border border-slate-800 px-2 sm:px-3 py-1 rounded-lg text-xs text-slate-300 overflow-x-auto max-w-[180px] sm:max-w-xs">
+                    <span class="text-blue-400 font-semibold cursor-pointer" onclick="fmNavigateTo('Home')">Home</span>
+                    <span id="fm-current-path"></span>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="relative">
+                    <input id="fm-search" type="text" placeholder="Search..." oninput="fmSearchFiles()"
+                        class="bg-slate-950/60 border border-slate-800 text-xs text-slate-200 rounded-lg pl-7 pr-2 py-1.5 focus:outline-none focus:border-blue-500 w-28 sm:w-44">
+                    <i class="fa-solid fa-magnifying-glass absolute left-2 top-2.5 text-slate-500 text-xs"></i>
+                </div>
+                <button onclick="fmPromptCreateFile()"
+                    class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium transition shadow-md whitespace-nowrap">
+                    <i class="fa-solid fa-plus"></i> <span class="hidden sm:inline">New</span> File
+                </button>
+                <button onclick="fmPromptCreateFolder()"
+                    class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg flex items-center gap-1 font-medium transition whitespace-nowrap">
+                    <i class="fa-solid fa-folder-plus"></i> Folder
+                </button>
+            </div>
+        </div>
+        <!-- Main Content Body -->
+        <div class="flex-1 flex overflow-hidden">
+            <aside
+                class="fm-sidebar w-12 sm:w-36 md:w-48 bg-slate-950/40 border-r border-slate-800/80 p-2 sm:p-3 space-y-1 text-xs shrink-0">
+                <div
+                    class="fm-sidebar-title text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 mb-1 hidden sm:block">
+                    Navigation</div>
+                <button onclick="fmNavigateTo('Home')"
+                    class="fm-side-link active flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-house text-blue-400"></i><span class="hidden sm:inline">Home</span></button>
+                <button onclick="fmNavigateTo('Documents')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-folder text-amber-400"></i><span
+                        class="hidden sm:inline">Documents</span></button>
+                <button onclick="fmNavigateTo('Projects')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-code text-emerald-400"></i><span
+                        class="hidden sm:inline">Projects</span></button>
+                <button onclick="fmNavigateTo('Pictures')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-image text-indigo-400"></i><span
+                        class="hidden sm:inline">Pictures</span></button>
+                <button onclick="fmNavigateTo('Downloads')"
+                    class="fm-side-link flex items-center space-x-2.5 w-full px-2 py-2 rounded-lg text-slate-300 hover:bg-slate-800/60 transition"><i
+                        class="fa-solid fa-download text-teal-400"></i><span
+                        class="hidden sm:inline">Downloads</span></button>
+            </aside>
+            <!-- File Grid Container -->
+            <div class="flex-1 p-3 sm:p-4 overflow-y-auto">
+                <div id="fm-file-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+                    <!-- Dynamic File Items Render Here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. NOTEPAD WINDOW -->
+    <div id="win-notepad"
+        class="app-window hidden absolute top-14 left-4 md:left-32 w-[96vw] md:w-[720px] max-w-[96vw] md:max-w-[720px] h-[82vh] md:h-[480px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200 truncate">
+                <i class="fa-solid fa-file-lines text-emerald-400"></i>
+                <span id="notepad-title" class="truncate">Notepad - Untitled.txt</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('notepad')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('notepad')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('notepad')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- File Menu Bar -->
+        <div
+            class="min-h-9 py-1 bg-slate-800/50 border-b border-slate-800/80 px-3 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-300">
+            <button onclick="notepadNewFile()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-file text-slate-400"></i> New
+            </button>
+            <button onclick="notepadOpenFilePrompt()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-folder-open text-amber-400"></i> Open
+            </button>
+            <button onclick="notepadSaveFile()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-floppy-disk text-blue-400"></i> Save
+            </button>
+            <button onclick="notepadSaveAsPrompt()"
+                class="np-menu-btn hover:text-white flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-700/60 transition">
+                <i class="fa-solid fa-file-export text-purple-400"></i> Save As
+            </button>
+        </div>
+        <!-- Edit Toolbar -->
+        <div class="min-h-8 bg-slate-950/50 border-b border-slate-800/60 px-2 sm:px-3 flex flex-wrap items-center gap-0.5 text-xs text-slate-400"
+            onmousedown="event.preventDefault()">
+            <span
+                class="text-[9px] font-bold text-slate-600 uppercase tracking-wider mr-1.5 hidden sm:inline">Edit</span>
+            <button onclick="notepadUndo()" title="Undo (Ctrl+Z)" class="np-tool-btn">
+                <i class="fa-solid fa-rotate-left"></i><span class="hidden lg:inline ml-1">Undo</span>
+            </button>
+            <button onclick="notepadRedo()" title="Redo (Ctrl+Y)" class="np-tool-btn">
+                <i class="fa-solid fa-rotate-right"></i><span class="hidden lg:inline ml-1">Redo</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadCut()" title="Cut selection"
+                class="np-tool-btn text-amber-400/80 hover:text-amber-300">
+                <i class="fa-solid fa-scissors"></i><span class="hidden lg:inline ml-1">Cut</span>
+            </button>
+            <button onclick="notepadCopy()" title="Copy selection"
+                class="np-tool-btn text-blue-400/80 hover:text-blue-300">
+                <i class="fa-regular fa-copy"></i><span class="hidden lg:inline ml-1">Copy</span>
+            </button>
+            <button onclick="notepadPaste()" title="Paste from clipboard"
+                class="np-tool-btn text-emerald-400/80 hover:text-emerald-300">
+                <i class="fa-solid fa-clipboard"></i><span class="hidden lg:inline ml-1">Paste</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadSelectAll()" title="Select All"
+                class="np-tool-btn text-indigo-400/80 hover:text-indigo-300">
+                <i class="fa-solid fa-object-group"></i><span class="hidden lg:inline ml-1">All</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadFind()" title="Find text" class="np-tool-btn text-cyan-400/80 hover:text-cyan-300">
+                <i class="fa-solid fa-magnifying-glass"></i><span class="hidden lg:inline ml-1">Find</span>
+            </button>
+            <button onclick="notepadReplace()" title="Find &amp; Replace"
+                class="np-tool-btn text-teal-400/80 hover:text-teal-300">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i><span class="hidden lg:inline ml-1">Replace</span>
+            </button>
+            <div class="np-divider"></div>
+            <button onclick="notepadClear()" title="Clear all text"
+                class="np-tool-btn text-rose-400/80 hover:text-rose-300">
+                <i class="fa-solid fa-eraser"></i><span class="hidden lg:inline ml-1">Clear</span>
+            </button>
+            <button onclick="notepadToggleWordWrap()" id="np-wordwrap-btn" title="Toggle Word Wrap"
+                class="np-tool-btn text-violet-400/80 hover:text-violet-300">
+                <i class="fa-solid fa-text-width"></i><span class="hidden lg:inline ml-1">Wrap</span>
+            </button>
+        </div>
+        <!-- Editor Area -->
+        <div class="flex-1 relative bg-slate-950/80 p-2">
+            <textarea id="notepad-editor" oninput="notepadOnInput()" onmouseup="npSaveSelection()"
+                onkeyup="npSaveSelection()" onkeydown="npSaveSelection()" onselect="npSaveSelection()"
+                onclick="npSaveSelection()" onfocus="npSaveSelection()"
+                class="w-full h-full bg-transparent text-slate-100 font-mono text-xs sm:text-sm p-2 sm:p-3 focus:outline-none resize-none leading-relaxed placeholder-slate-600"
+                placeholder="Type your notes or text here..."></textarea>
+        </div>
+        <!-- Status Bar -->
+        <div
+            class="h-7 bg-slate-950 border-t border-slate-800/80 px-3 sm:px-4 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <span>Words: <strong id="np-word-count" class="text-slate-200">0</strong></span>
+                <span>Characters: <strong id="np-char-count" class="text-slate-200">0</strong></span>
+            </div>
+            <div>UTF-8</div>
+        </div>
+    </div>
+
+    <!-- 3. CALCULATOR WINDOW -->
+    <div id="win-calculator"
+        class="app-window hidden absolute top-14 left-4 md:left-48 w-[92vw] sm:w-[380px] max-w-[380px] h-[520px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-calculator text-amber-400"></i>
+                <span>Calculator</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('calculator')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeApp('calculator')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Calculator Display -->
+        <div
+            class="p-4 bg-slate-950/70 border-b border-slate-800 flex flex-col justify-end text-right h-28 select-text">
+            <div id="calc-history-prev" class="text-xs text-slate-500 font-mono h-5 overflow-hidden"></div>
+            <div id="calc-display" class="text-3xl font-mono font-semibold text-slate-100 truncate">0</div>
+        </div>
+        <!-- Calc Grid Body -->
+        <div class="flex-1 p-3 grid grid-cols-4 gap-2 bg-slate-900/60 text-base font-semibold">
+            <button onclick="calcClear()"
+                class="bg-rose-900/40 hover:bg-rose-800/60 text-rose-300 rounded-lg border border-rose-800/50 transition">AC</button>
+            <button onclick="calcToggleSign()"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition">±</button>
+            <button onclick="calcPercent()"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition">%</button>
+            <button onclick="calcOp('÷')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">÷</button>
+
+            <button onclick="calcNum('7')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">7</button>
+            <button onclick="calcNum('8')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">8</button>
+            <button onclick="calcNum('9')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">9</button>
+            <button onclick="calcOp('×')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">×</button>
+
+            <button onclick="calcNum('4')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">4</button>
+            <button onclick="calcNum('5')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">5</button>
+            <button onclick="calcNum('6')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">6</button>
+            <button onclick="calcOp('−')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">−</button>
+
+            <button onclick="calcNum('1')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">1</button>
+            <button onclick="calcNum('2')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">2</button>
+            <button onclick="calcNum('3')"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">3</button>
+            <button onclick="calcOp('+')"
+                class="bg-amber-600/80 hover:bg-amber-500 text-white rounded-lg border border-amber-500 transition">+</button>
+
+            <button onclick="calcNum('0')"
+                class="col-span-2 bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">0</button>
+            <button onclick="calcDecimal()"
+                class="bg-slate-800/80 hover:bg-slate-700 text-slate-100 rounded-lg border border-slate-700/60 transition">.</button>
+            <button onclick="calcEquals()"
+                class="bg-blue-600 hover:bg-blue-500 text-white rounded-lg border border-blue-400 transition font-bold">=</button>
+        </div>
+        <!-- History Drawer Footer -->
+        <div class="h-16 bg-slate-950 border-t border-slate-800 px-3 py-1 text-xs overflow-y-auto">
+            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-0.5">History</div>
+            <div id="calc-history-list" class="space-y-0.5 text-slate-400 font-mono text-[11px]">
+                <div>No recent calculations</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. TERMINAL WINDOW -->
+    <div id="win-terminal"
+        class="app-window hidden absolute top-14 left-4 md:left-64 w-[96vw] md:w-[760px] max-w-[96vw] md:max-w-[760px] h-[82vh] md:h-[460px] bg-slate-950/95 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-900 px-3 sm:px-4 border-b border-slate-800 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-terminal text-violet-400"></i>
+                <span>Nexus Terminal v1.0</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('terminal')"
+                    class="w-6 h-6 rounded hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('terminal')"
+                    class="w-6 h-6 rounded hover:bg-slate-800 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('terminal')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Terminal Screen Area -->
+        <div id="terminal-body"
+            class="flex-1 p-3 sm:p-4 font-mono text-xs text-emerald-400 overflow-y-auto space-y-2 select-text">
+            <div>Nexus Terminal v1.0 [Build 2026]</div>
+            <div>Type '<span class="text-yellow-300">help</span>' to see available commands.</div>
+            <br>
+            <div id="terminal-output" class="space-y-2"></div>
+            <!-- Input Prompt Line -->
+            <div class="flex items-center space-x-2 pt-1">
+                <span class="text-blue-400 font-bold">user@nexus:~$</span>
+                <input id="terminal-input" type="text" autocomplete="off" spellcheck="false"
+                    class="flex-1 bg-transparent text-slate-100 border-none outline-none font-mono text-xs focus:ring-0">
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. TASK MANAGER WINDOW -->
+    <div id="win-task-manager"
+        class="app-window hidden absolute top-14 left-4 md:left-72 w-[96vw] md:w-[740px] max-w-[96vw] md:max-w-[740px] h-[82vh] md:h-[480px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-chart-pie text-rose-400"></i>
+                <span>Task Manager</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('task-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('task-manager')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('task-manager')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Tabs + Toolbar Header -->
+        <div
+            class="min-h-10 bg-slate-800/40 border-b border-slate-800 px-3 sm:px-4 flex items-center justify-between text-xs gap-2 flex-wrap py-1">
+            <div class="flex space-x-3 font-medium">
+                <button class="text-blue-400 border-b-2 border-blue-500 pb-1.5 pt-1 font-semibold">Processes</button>
+                <button
+                    class="text-slate-400 hover:text-slate-200 pb-1.5 pt-1 hidden sm:inline-block">Performance</button>
+                <button
+                    class="text-slate-400 hover:text-slate-200 pb-1.5 pt-1 hidden sm:inline-block">Applications</button>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="tmAddTask()"
+                    class="flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 border border-blue-500/30 hover:border-blue-400/50 text-[11px] px-2.5 py-1 rounded-lg transition font-medium">
+                    <i class="fa-solid fa-plus text-[10px]"></i> Add Task
+                </button>
+                <button onclick="tmRefresh()"
+                    class="flex items-center gap-1 text-slate-400 hover:text-white text-xs px-2 py-1 rounded hover:bg-slate-700/40 transition">
+                    <i class="fa-solid fa-rotate"></i><span class="hidden sm:inline"> Refresh</span>
+                </button>
+            </div>
+        </div>
+        <!-- Processes Table -->
+        <div class="flex-1 p-3 sm:p-4 overflow-x-auto">
+            <table class="min-w-[440px] w-full text-left text-xs text-slate-300">
+                <thead class="text-slate-500 uppercase text-[10px] border-b border-slate-800 font-bold">
+                    <tr>
+                        <th class="pb-2">Process</th>
+                        <th class="pb-2">CPU</th>
+                        <th class="pb-2">Memory</th>
+                        <th class="pb-2">Status</th>
+                        <th class="pb-2 text-right">Close</th>
+                    </tr>
+                </thead>
+                <tbody id="task-manager-list" class="divide-y divide-slate-800/60 font-mono">
+                    <!-- Dynamic Process Rows -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Footer System Overview Metrics -->
+        <div
+            class="h-10 bg-slate-950 border-t border-slate-800/80 px-4 sm:px-6 flex items-center justify-around text-[11px] sm:text-xs text-slate-400 font-mono">
+            <div>CPU: <strong id="tm-cpu-total" class="text-blue-400">11.2%</strong></div>
+            <div>Memory: <strong id="tm-mem-total" class="text-emerald-400">200 MB / 4 GB</strong></div>
+            <div class="hidden sm:block">Storage: <strong class="text-amber-400">68%</strong></div>
+        </div>
+    </div>
+
+    <!-- 6. TRASH WINDOW -->
+    <div id="win-trash"
+        class="app-window hidden absolute top-14 left-4 md:left-80 w-[96vw] md:w-[700px] max-w-[96vw] md:max-w-[700px] h-[82vh] md:h-[460px] bg-slate-900/90 border border-slate-700/70 rounded-xl shadow-2xl backdrop-blur-xl flex flex-col overflow-hidden z-20">
+        <!-- Titlebar -->
+        <div
+            class="window-header h-10 bg-slate-800/80 px-3 sm:px-4 border-b border-slate-700/60 flex items-center justify-between cursor-move select-none">
+            <div class="flex items-center space-x-2 text-sm font-semibold text-slate-200">
+                <i class="fa-solid fa-trash-can text-slate-400"></i>
+                <span>Trash</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeApp('trash')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="maximizeApp('trash')"
+                    class="w-6 h-6 rounded hover:bg-slate-700/70 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-regular fa-square text-xs"></i></button>
+                <button onclick="closeApp('trash')"
+                    class="w-6 h-6 rounded hover:bg-rose-600 flex items-center justify-center text-slate-400 hover:text-white"><i
+                        class="fa-solid fa-xmark text-xs"></i></button>
+            </div>
+        </div>
+        <!-- Toolbar -->
+        <div
+            class="min-h-10 bg-slate-800/40 border-b border-slate-800 px-3 sm:px-4 flex items-center justify-between text-xs py-1.5 gap-2">
+            <span class="text-slate-400 text-xs">Items in Trash: <strong id="trash-count"
+                    class="text-slate-200">0</strong></span>
+            <button onclick="trashEmptyAll()"
+                class="flex items-center gap-1.5 bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-500/30 hover:border-rose-400/50 text-[11px] px-2.5 py-1 rounded-lg transition font-medium">
+                <i class="fa-solid fa-fire text-[10px]"></i> Empty Trash
+            </button>
+        </div>
+        <!-- Trash Content -->
+        <div class="flex-1 p-4 overflow-y-auto">
+            <div id="trash-item-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                <!-- Populated by JS -->
+            </div>
+        </div>
     </div>
 
 
+    <!-- BOTTOM DOCK / TASKBAR -->
+    <div
+        class="fixed bottom-2 sm:bottom-3 left-1/2 -translate-x-1/2 z-50 bg-slate-900/80 border border-slate-700/60 backdrop-blur-2xl rounded-2xl px-2.5 sm:px-4 py-1.5 sm:py-2 flex items-center space-x-1.5 sm:space-x-3 shadow-2xl max-w-[96vw] overflow-x-auto">
+        <button id="dock-launcher" onclick="toggleStartMenu()"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-blue-400 transition">
+            <i class="fa-solid fa-square-n text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span class="tooltip">Launcher</span>
+        </button>
+        <div class="w-px h-5 sm:h-6 bg-slate-700/70"></div>
 
-    <!-- ============================================================
-     NEXUS CORE JAVASCRIPT
-============================================================ -->
-    <script src="./js/state-manager.js"></script>
-    <script src="./js/boot.js"></script>
-    <script src="./js/auth.js"></script>
-    <script src="./js/app-manager.js"></script>
-    <script src="./js/shortcut.manager.js"></script>
+        <button onclick="openApp('file-manager')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-blue-400 transition">
+            <i class="fa-solid fa-folder-open text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-file-manager"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            <span class="tooltip">File Manager</span>
+        </button>
 
-    <script src="./js/event-manager.js"></script>
-    <script src="./js/window-manager.js"></script>
+        <button onclick="openApp('notepad')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-emerald-400 transition">
+            <i class="fa-solid fa-file-lines text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-notepad"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span class="tooltip">Notepad</span>
+        </button>
 
-    <script src="./js/nexus.js"></script>
-    <script src="./js/settings.js"></script>
-    <script src="./js/notepad.js"></script>
-    <script src="./js/terminal.js"></script>
-    <script src="./js/calculator.js"></script>
-    <script src="./js/task-manager.js"></script>
+        <button onclick="openApp('calculator')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-amber-400 transition">
+            <i class="fa-solid fa-calculator text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-calculator"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+            <span class="tooltip">Calculator</span>
+        </button>
 
+        <button onclick="openApp('terminal')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-violet-400 transition">
+            <i class="fa-solid fa-terminal text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-terminal"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-violet-400"></span>
+            <span class="tooltip">Terminal</span>
+        </button>
 
+        <button onclick="openApp('task-manager')"
+            class="dock-btn group relative p-1.5 sm:p-2 rounded-xl hover:bg-slate-800 text-rose-400 transition">
+            <i class="fa-solid fa-chart-pie text-xl sm:text-2xl group-hover:scale-110 transition"></i>
+            <span id="dock-dot-task-manager"
+                class="hidden absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+            <span class="tooltip">Task Manager</span>
+        </button>
+    </div>
+
+    <!-- START MENU MODAL -->
+    <div id="start-menu"
+        class="hidden fixed bottom-16 sm:bottom-20 left-1/2 -translate-x-1/2 z-50 w-[92vw] sm:w-[420px] max-w-[420px] bg-slate-900/95 border border-slate-700/80 backdrop-blur-2xl rounded-2xl p-4 sm:p-5 shadow-2xl space-y-4">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <div class="flex items-center space-x-3">
+                <div
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow text-sm">
+                    N</div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-100">user@nexus</div>
+                    <div class="text-xs text-slate-400">Personal Workspace</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-power-off text-rose-400 hover:text-rose-300 cursor-pointer p-2" title="Power Options"
+                onclick="nexusAlert('Nexus OS is running smoothly and all virtual systems are operational.', 'System Power', 'fa-solid fa-power-off text-rose-400')"></i>
+        </div>
+
+        <div>
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 sm:mb-3">All Applications
+            </div>
+            <div class="grid grid-cols-4 gap-2 sm:gap-3">
+                <button onclick="openApp('file-manager'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-folder-open text-xl sm:text-2xl text-blue-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Files</span>
+                </button>
+                <button onclick="openApp('notepad'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-file-lines text-xl sm:text-2xl text-emerald-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Notes</span>
+                </button>
+                <button onclick="openApp('calculator'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-calculator text-xl sm:text-2xl text-amber-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Calculator</span>
+                </button>
+                <button onclick="openApp('terminal'); toggleStartMenu()"
+                    class="flex flex-col items-center p-2 sm:p-3 rounded-xl hover:bg-slate-800/80 transition">
+                    <i class="fa-solid fa-terminal text-xl sm:text-2xl text-violet-400 mb-1"></i>
+                    <span class="text-[11px] sm:text-xs text-slate-200">Terminal</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800">
+            <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Recent Files</div>
+            <div class="space-y-1.5 text-xs text-slate-300">
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-800/50 cursor-pointer"
+                    onclick="openFileInNotepad('project.html'); toggleStartMenu()">
+                    <div class="flex items-center space-x-2"><i
+                            class="fa-solid fa-file-code text-blue-400"></i><span>project.html</span></div>
+                    <span class="text-[10px] text-slate-500">Documents</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-lg hover:bg-slate-800/50 cursor-pointer"
+                    onclick="openFileInNotepad('notes.txt'); toggleStartMenu()">
+                    <div class="flex items-center space-x-2"><i
+                            class="fa-solid fa-file-lines text-emerald-400"></i><span>notes.txt</span></div>
+                    <span class="text-[10px] text-slate-500">Home</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SYSTEM TOAST CONTAINER -->
+    <div id="nexus-toast-container"
+        class="fixed bottom-16 right-4 z-[999999] flex flex-col gap-2 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- SYSTEM MODAL CONTAINER -->
+    <div id="nexus-modal-overlay"
+        class="hidden fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[99999] flex items-center justify-center p-3 sm:p-4 transition-all duration-200">
+        <div id="nexus-modal-card"
+            class="bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl backdrop-blur-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all duration-200">
+            <!-- Modal Header -->
+            <div
+                class="h-12 bg-slate-800/80 px-4 sm:px-5 border-b border-slate-700/60 flex items-center justify-between select-none">
+                <div class="flex items-center space-x-2.5 text-sm font-semibold text-slate-200">
+                    <i id="nexus-modal-icon" class="fa-solid fa-circle-info text-blue-400 text-base"></i>
+                    <span id="nexus-modal-title">System Message</span>
+                </div>
+                <button onclick="nexusModalClose(null)"
+                    class="w-6 h-6 rounded-lg hover:bg-rose-600/30 text-slate-400 hover:text-rose-300 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-xs"></i>
+                </button>
+            </div>
+            <!-- Modal Body -->
+            <div class="p-4 sm:p-5 space-y-4 select-none">
+                <div id="nexus-modal-message" class="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap"></div>
+
+                <!-- Input Container for Prompts -->
+                <div id="nexus-modal-input-container" class="hidden space-y-2">
+                    <label id="nexus-modal-input-label" class="block text-[11px] font-medium text-slate-400"></label>
+                    <input id="nexus-modal-input" type="text" autocomplete="off"
+                        class="w-full bg-slate-950/80 border border-slate-800 text-xs text-slate-100 rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-500 transition font-sans">
+                    <textarea id="nexus-modal-textarea" rows="4"
+                        class="hidden w-full bg-slate-950/80 border border-slate-800 text-xs text-slate-100 rounded-xl p-3 focus:outline-none focus:border-blue-500 transition font-mono leading-relaxed resize-none"></textarea>
+                </div>
+
+                <!-- Selectable List Container for File Picker -->
+                <div id="nexus-modal-select-container"
+                    class="hidden max-h-48 overflow-y-auto space-y-1.5 border border-slate-800 bg-slate-950/60 rounded-xl p-2 select-text">
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div
+                class="h-14 bg-slate-950/80 border-t border-slate-800/80 px-4 sm:px-5 flex items-center justify-end space-x-3 select-none">
+                <button id="nexus-modal-btn-cancel" onclick="nexusModalClose(null)"
+                    class="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-medium text-slate-300 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 transition">
+                    Cancel
+                </button>
+                <button id="nexus-modal-btn-confirm" onclick="nexusModalSubmit()"
+                    class="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-medium text-white bg-blue-600 hover:bg-blue-500 border border-blue-400/30 transition shadow-lg shadow-blue-500/20">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script src="app.js"></script>
 </body>
 
 </html>

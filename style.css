@@ -1,0 +1,252 @@
+/* Custom styles for Nexus Web OS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+
+/* Tooltip on Dock buttons */
+.dock-btn .tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    color: #f1f5f9;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    transition: all 0.2s ease-in-out;
+    pointer-events: none;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.dock-btn:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Window active state shadow glowing accent */
+.app-window.active-window {
+    box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(51, 65, 85, 0.8);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(71, 85, 105, 1);
+}
+
+/* Desktop Icon hover & highlight */
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    cursor: pointer;
+    text-align: center;
+    gap: 6px;
+}
+
+/* Sidebar navigation active state */
+.fm-side-link.active {
+    background-color: rgba(30, 41, 59, 0.9);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* Card Quick Action Buttons */
+.card-actions {
+    opacity: 0;
+    transform: translateY(2px);
+    transition: all 0.2s ease-in-out;
+}
+.group:hover .card-actions {
+    opacity: 1;
+    transform: translateY(0);
+}
+.action-btn {
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+/* System Modal Overlay must always be on top of all windows and taskbar */
+#nexus-modal-overlay {
+    z-index: 99999 !important;
+}
+
+/* ========================================================
+   RESPONSIVE DESIGN BREAKPOINTS FOR TABLETS AND MOBILE
+   ======================================================== */
+@media (max-width: 768px) {
+    /* Windows snap to clean responsive viewport card on mobile */
+    .app-window {
+        position: fixed !important;
+        top: 36px !important;
+        left: 2vw !important;
+        width: 96vw !important;
+        max-width: 96vw !important;
+        height: calc(100vh - 100px) !important;
+        max-height: calc(100vh - 100px) !important;
+        border-radius: 12px;
+    }
+
+    #win-calculator {
+        width: 94vw !important;
+        max-width: 360px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        height: min(540px, calc(100vh - 100px)) !important;
+    }
+
+    #start-menu {
+        width: 94vw !important;
+        max-width: 380px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 74px !important;
+    }
+
+    /* Compact dock on mobile */
+    .dock-btn {
+        padding: 6px !important;
+    }
+    .dock-btn i {
+        font-size: 18px !important;
+    }
+
+    /* Desktop shortcuts spacing */
+    #desktop {
+        padding: 12px !important;
+        gap: 12px !important;
+        grid-template-rows: repeat(5, minmax(0, 1fr)) !important;
+    }
+    .desktop-icon {
+        width: 64px !important;
+    }
+    .desktop-icon .w-14 {
+        width: 46px !important;
+        height: 46px !important;
+        font-size: 18px !important;
+    }
+
+    /* File Manager Mobile Layout */
+    .fm-sidebar {
+        width: 48px !important;
+        padding: 6px !important;
+    }
+    .fm-sidebar span {
+        display: none !important;
+    }
+    .fm-sidebar .fm-side-link {
+        justify-content: center !important;
+        padding: 8px !important;
+    }
+    .fm-sidebar-title {
+        display: none !important;
+    }
+
+    #fm-file-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    /* Card action buttons always visible or tap-friendly on touch devices */
+    .card-actions {
+        opacity: 0.85;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .app-window {
+        max-width: 92vw !important;
+        max-height: 82vh !important;
+    }
+    #fm-file-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+/* Image Thumbnail in File Manager Card */
+.file-thumb-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Image Viewer Modal */
+#nexus-image-viewer-modal {
+    z-index: 100000 !important;
+}
+
+/* ========================================================
+   NOTEPAD EDIT TOOLBAR BUTTON STYLES
+   ======================================================== */
+.np-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-size: 11px;
+    color: #94a3b8;
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+.np-tool-btn:hover {
+    background: rgba(30, 41, 59, 0.9);
+    border-color: rgba(51, 65, 85, 0.6);
+    color: #e2e8f0;
+    transform: translateY(-0.5px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.np-tool-btn:active {
+    transform: translateY(0px);
+    background: rgba(15, 23, 42, 0.9);
+}
+.np-tool-btn-active {
+    background: rgba(109, 40, 217, 0.2) !important;
+    border-color: rgba(139, 92, 246, 0.4) !important;
+    color: #a78bfa !important;
+}
+.np-divider {
+    width: 1px;
+    height: 14px;
+    background: rgba(51, 65, 85, 0.7);
+    margin: 0 3px;
+    flex-shrink: 0;
+}
+
+/* Top toolbar active-app highlight */
+header button.toolbar-active {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.3);
+    color: #93c5fd;
+}
+

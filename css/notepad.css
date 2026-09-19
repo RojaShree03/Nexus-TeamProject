@@ -1,0 +1,388 @@
+/* ================================================================
+   NEXUS NOTEPAD STYLES
+   Modern Glassmorphism Text Editor for Nexus OS
+================================================================ */
+
+.nexus-notepad-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(120% 140% at 100% 0%, rgba(255, 159, 67, 0.07), transparent 50%),
+                linear-gradient(180deg, #141318 0%, #0d0c10 100%);
+    color: #f7f3ed;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+}
+
+/* ----------------------------------------------------------------
+   Top Toolbar & Menu
+---------------------------------------------------------------- */
+.notepad-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.notepad-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.notepad-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    color: #f0eae1;
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.notepad-btn:hover {
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 159, 67, 0.4);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.notepad-btn:active {
+    transform: translateY(0);
+    background: rgba(255, 159, 67, 0.2);
+}
+
+.notepad-btn.btn-accent {
+    background: rgba(255, 159, 67, 0.15);
+    border-color: rgba(255, 159, 67, 0.35);
+    color: #ffb66b;
+}
+
+.notepad-btn.btn-accent:hover {
+    background: #ff9f43;
+    color: #0d0c10;
+    border-color: #ff9f43;
+    box-shadow: 0 4px 14px rgba(255, 159, 67, 0.35);
+}
+
+.notepad-btn.btn-danger {
+    background: rgba(255, 107, 107, 0.12);
+    border-color: rgba(255, 107, 107, 0.3);
+    color: #ff7b72;
+}
+
+.notepad-btn.btn-danger:hover {
+    background: #ff6b6b;
+    color: #0d0c10;
+    border-color: #ff6b6b;
+    box-shadow: 0 4px 14px rgba(255, 107, 107, 0.35);
+}
+
+.notepad-saved-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.notepad-btn-delete-inline {
+    background: transparent;
+    border: 1px solid rgba(255, 107, 107, 0.25);
+    color: #ff7b72;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.notepad-btn-delete-inline:hover {
+    background: rgba(255, 107, 107, 0.2);
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.notepad-btn svg {
+    flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------------
+   Document Title Header
+---------------------------------------------------------------- */
+.notepad-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    max-width: 320px;
+}
+
+.notepad-title-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 7px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #f7f3ed;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.notepad-title-input:focus {
+    border-color: #ff9f43;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2);
+}
+
+.notepad-doc-badge {
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #a8a29e;
+    white-space: nowrap;
+}
+
+.notepad-doc-badge.unsaved {
+    background: rgba(255, 159, 67, 0.18);
+    color: #ffb66b;
+}
+
+/* ----------------------------------------------------------------
+   Editor Body
+---------------------------------------------------------------- */
+.notepad-editor-body {
+    flex: 1;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.notepad-textarea {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 18px 22px;
+    font-family: "Cascadia Code", "Fira Code", "Consolas", "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #f3efe9;
+    resize: none;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    tab-size: 4;
+}
+
+.notepad-textarea::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.notepad-textarea::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notepad-textarea::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.notepad-textarea::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.notepad-textarea::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 159, 67, 0.4);
+}
+
+/* ----------------------------------------------------------------
+   Status Bar
+---------------------------------------------------------------- */
+.notepad-statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 16px;
+    background: rgba(10, 10, 14, 0.7);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 11.5px;
+    color: #9c958e;
+}
+
+.notepad-stats {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.notepad-stat-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.notepad-stat-value {
+    color: #ffb66b;
+    font-weight: 600;
+}
+
+.notepad-status-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ----------------------------------------------------------------
+   Notes Picker Modal / Saved Notes Dropdown
+---------------------------------------------------------------- */
+.notepad-modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.notepad-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.notepad-modal {
+    background: #18161d;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    width: min(440px, 92%);
+    max-height: 80%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+}
+
+.notepad-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.notepad-modal-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f7f3ed;
+}
+
+.notepad-modal-close {
+    background: transparent;
+    border: none;
+    color: #8f8a84;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: color 0.15s ease;
+}
+
+.notepad-modal-close:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.notepad-saved-list {
+    padding: 10px 14px;
+    overflow-y: auto;
+    max-height: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.notepad-saved-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.notepad-saved-item:hover {
+    background: rgba(255, 159, 67, 0.1);
+    border-color: rgba(255, 159, 67, 0.3);
+}
+
+.notepad-saved-item-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #f5f0e9;
+}
+
+.notepad-saved-item-meta {
+    font-size: 11px;
+    color: #8e8780;
+}
+
+.notepad-empty-msg {
+    text-align: center;
+    padding: 24px 10px;
+    color: #8c8680;
+    font-size: 13px;
+}
+
+/* ----------------------------------------------------------------
+   Toast Notification
+---------------------------------------------------------------- */
+.notepad-toast {
+    position: absolute;
+    bottom: 40px;
+    right: 20px;
+    background: rgba(20, 18, 25, 0.95);
+    border: 1px solid rgba(255, 159, 67, 0.4);
+    color: #f7f3ed;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s ease;
+    pointer-events: none;
+    z-index: 110;
+}
+
+.notepad-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}

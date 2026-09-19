@@ -1,0 +1,208 @@
+/* ================================================================
+   NEXUS TERMINAL STYLES
+   Modern Glassmorphism Monospace Terminal for Nexus OS
+================================================================ */
+
+.nexus-terminal-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(100% 120% at 100% 0%, rgba(255, 159, 67, 0.05), transparent 60%),
+                #09090d;
+    color: #e6edf3;
+    font-family: "Cascadia Code", "Fira Code", "Space Mono", "JetBrains Mono", "Consolas", monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    overflow: hidden;
+    position: relative;
+    user-select: text;
+    cursor: text;
+}
+
+/* ----------------------------------------------------------------
+   Terminal Output Area
+---------------------------------------------------------------- */
+.terminal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.terminal-body::-webkit-scrollbar {
+    width: 7px;
+}
+
+.terminal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.terminal-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+}
+
+.terminal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 159, 67, 0.4);
+}
+
+/* ----------------------------------------------------------------
+   Banner & System Texts
+---------------------------------------------------------------- */
+.terminal-banner {
+    color: #ffb66b;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    user-select: none;
+}
+
+.terminal-banner-title {
+    font-weight: 700;
+    color: #ff9f43;
+    font-size: 14px;
+}
+
+.terminal-banner-sub {
+    color: #94908c;
+    font-size: 12px;
+}
+
+.terminal-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.terminal-command-line {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.terminal-prompt-user {
+    color: #ff9f43;
+    font-weight: 600;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.terminal-prompt-path {
+    color: #7ee787;
+    user-select: none;
+}
+
+.terminal-command-text {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.terminal-response {
+    color: #c9d1d9;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding-left: 2px;
+}
+
+.terminal-response.error {
+    color: #ff7b72;
+}
+
+.terminal-response.success {
+    color: #7ee787;
+}
+
+.terminal-response.info {
+    color: #79c0ff;
+}
+
+.terminal-table {
+    display: table;
+    width: 100%;
+    margin: 4px 0;
+    border-collapse: collapse;
+}
+
+.terminal-table-row {
+    display: table-row;
+}
+
+.terminal-table-cmd {
+    display: table-cell;
+    color: #ffb66b;
+    font-weight: 600;
+    padding-right: 20px;
+    padding-bottom: 4px;
+    white-space: nowrap;
+    width: 140px;
+}
+
+.terminal-table-desc {
+    display: table-cell;
+    color: #b1bac4;
+    padding-bottom: 4px;
+}
+
+/* ----------------------------------------------------------------
+   Active Input Line & Blinking Cursor
+---------------------------------------------------------------- */
+.terminal-input-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-height: 24px;
+    padding-top: 4px;
+}
+
+.terminal-input-field-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    margin-left: 8px;
+}
+
+.terminal-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: transparent;
+    cursor: text;
+    z-index: 10;
+}
+
+.terminal-input-display {
+    color: #ffffff;
+    font-family: inherit;
+    font-size: inherit;
+    white-space: pre;
+    pointer-events: none;
+}
+
+.terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background-color: #ff9f43;
+    vertical-align: middle;
+    margin-left: 1px;
+    animation: terminal-blink 1s step-end infinite;
+}
+
+@keyframes terminal-blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
